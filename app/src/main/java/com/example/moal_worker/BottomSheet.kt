@@ -25,7 +25,7 @@ class BottomSheet : BottomSheetDialogFragment() {
         val v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false)
 
         v.button1.setOnClickListener {
-            database.child("한국항공대학교").child("StoreInfo").child("Monday").child("open").setValue("user1 :"+ "Hope")
+            database.child("한국항공대학교").child("StoreInfo").child("Monday").child("open").setValue("user1 :"+ "hope")
         }
         v.button2.setOnClickListener {
             database.child("한국항공대학교").child("StoreInfo").child("Monday").child("middle").setValue("user1 :"+ "Hope")
