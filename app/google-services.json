@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "189584808509",
+    "firebase_url": "https://moal-admin.firebaseio.com",
+    "project_id": "moal-admin",
+    "storage_bucket": "moal-admin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189584808509:android:73b2242db4e285ccd36854",
+        "android_client_info": {
+          "package_name": "com.e.moal_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189584808509-pgveejkc4dvvhgb5gpdjbndgb9c61tm3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.e.moal_admin",
+            "certificate_hash": "4264ceb57841347ba1350b0a7ed9d16f95d94fb6"
+          }
+        },
+        {
+          "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJaBaFiyZsO3yBovvPBZ7XveAhyGxHlt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189584808509:android:09753130ef93d5a3d36854",
+        "android_client_info": {
+          "package_name": "com.example.moal_alba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189584808509-ig94fpf1aj4amq9d87kgjq03tv1if3hp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moal_alba",
+            "certificate_hash": "c6f736c0480ddf1858fba9ff4ff7831f378f0c01"
+          }
+        },
+        {
+          "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJaBaFiyZsO3yBovvPBZ7XveAhyGxHlt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189584808509:android:0eee473ad39c35d1d36854",
+        "android_client_info": {
+          "package_name": "com.example.moal_worker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189584808509-uci4jbfpq4oi09rkr8j8eepivljj7d2h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moal_worker",
+            "certificate_hash": "8dd0d14845c6956ed521d3c7071b264acec6a0bd"
+          }
+        },
+        {
+          "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJaBaFiyZsO3yBovvPBZ7XveAhyGxHlt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189584808509-al85emdghm5tufl9g4q4cv8819ukflsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
