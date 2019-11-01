@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class CalenderActivity : AppCompatActivity(), BottomSheet.BottomSheetListener {
+class CalenderActivity : AppCompatActivity(){
     lateinit var homeFragment: HomeFragment
     lateinit var secondFragment: SecondFragment
     lateinit var thirdFragment: ThirdFragment
 
-    override fun onOptionClick(text: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +24,18 @@ class CalenderActivity : AppCompatActivity(), BottomSheet.BottomSheetListener {
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
 
+
         bottomnavigation.setOnNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.home->{
 
+                    homeFragment = HomeFragment()
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.frame_layout,homeFragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
+
 
                 }
                 R.id.second->{
