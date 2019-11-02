@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/store1"
+        android:title="CU 신당점"/>
+
+    <item
+        android:id="@+id/store2"
+        android:title="아웃백 신촌점"/>
+
+    <item
+        android:id="@+id/store3"
+        android:title="김밥천국 홍대점"/>
+
+
+</menu>
