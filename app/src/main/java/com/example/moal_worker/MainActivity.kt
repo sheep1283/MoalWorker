@@ -3,8 +3,6 @@ package com.example.moal_worker
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -27,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         btn_complete.setOnClickListener {
             writeNewUser(userId = "userNo-"+number ,email = id_text.text.toString(), password = pw_text.toString())
             number++
-            val calenderActivityintent: Intent = Intent(this, CalenderActivity::class.java)
+            val calenderActivityintent = Intent(this, CalenderActivity::class.java)
 
             startActivity(calenderActivityintent)
         }

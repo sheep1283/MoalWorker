@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.view.*
+import kotlin.ClassCastException as ClassCastException1
 
 
 class BottomSheet : BottomSheetDialogFragment() {
@@ -24,16 +25,6 @@ class BottomSheet : BottomSheetDialogFragment() {
 
         val v = inflater.inflate(R.layout.fragment_bottom_sheet, container, false)
 
-        v.button1.setOnClickListener {
-            database.child("한국항공대학교").child("StoreInfo").child("Monday").child("open").setValue("user1 :"+ "hope")
-        }
-        v.button2.setOnClickListener {
-            database.child("한국항공대학교").child("StoreInfo").child("Monday").child("middle").setValue("user1 :"+ "Hope")
-        }
-        v.button3.setOnClickListener {
-            database.child("한국항공대학교").child("StoreInfo").child("Monday").child("dinner").setValue("user1 :"+ "Hope")
-
-        }
 
         return v
     }
@@ -49,7 +40,7 @@ class BottomSheet : BottomSheetDialogFragment() {
             mBottomSheetListener = context as BottomSheetListener?
         }
         catch (e: ClassCastException){
-            throw ClassCastException(context!!.toString())
+            throw ClassCastException(context.toString())
         }
 
     }

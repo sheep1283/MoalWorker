@@ -3,7 +3,5 @@
     <color name="colorPrimary">#344955</color>
     <color name="colorPrimaryDark">#344955</color>
     <color name="colorAccent">#FAAB1A</color>
-    <color name="lineColor">#FA211A</color>
-    <color name="day_back">#FDF19E</color>
-
+    <color name="whiteColor">#ffffff</color>
 </resources>

@@ -1,71 +1,59 @@
 package com.example.moal_worker
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class CalenderActivity : AppCompatActivity(){
-    lateinit var homeFragment: HomeFragment
-    lateinit var secondFragment: SecondFragment
-    lateinit var thirdFragment: ThirdFragment
+class WorkingScheduleActivity : AppCompatActivity() {
 
+    lateinit var store1fragment: Store1Fragment
+    lateinit var store2fragment: Store2Fragment
+    lateinit var store3fragment: Store3Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.calender_activity)
-
-        val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_nav)
-
-        homeFragment = HomeFragment()
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.frame_layout,homeFragment)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
+        setContentView(R.layout.activity_working_schedule)
+        val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_storelist)
 
 
         bottomnavigation.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
-                R.id.home->{
+            when (item.itemId) {
+                R.id.store1 -> {
 
-                    homeFragment = HomeFragment()
+                    store1fragment = Store1Fragment()
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.frame_layout,homeFragment)
+                        .replace(R.id.frame_layout, store1fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
 
 
                 }
-                R.id.second->{
+                R.id.store2 -> {
 
-                    secondFragment = SecondFragment()
+                    store2fragment = Store2Fragment()
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.frame_layout,secondFragment)
+                        .replace(R.id.frame_layout, store2fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
 
                 }
-                R.id.third->{
+                R.id.store3 -> {
 
-                    thirdFragment = ThirdFragment()
+                    store3fragment = Store3Fragment()
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.frame_layout,thirdFragment)
+                        .replace(R.id.frame_layout, store3fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
 
                 }
+
+
             }
             true
         }
-
-
-
-
-
-
     }
 }
