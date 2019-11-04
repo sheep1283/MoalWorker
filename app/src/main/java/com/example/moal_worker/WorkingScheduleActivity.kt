@@ -1,59 +1,132 @@
 package com.example.moal_worker
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+
+import kotlinx.android.synthetic.main.day_calendar.*
+import androidx.recyclerview.widget.RecyclerView
+
 
 class WorkingScheduleActivity : AppCompatActivity() {
 
-    lateinit var store1fragment: Store1Fragment
-    lateinit var store2fragment: Store2Fragment
-    lateinit var store3fragment: Store3Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
-        val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_storelist)
+        initView()
 
 
-        bottomnavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.store1 -> {
 
-                    store1fragment = Store1Fragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.frame_layout, store1fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+    }
+
+    private fun initView() {
 
 
-                }
-                R.id.store2 -> {
+        time_sche_calendar.layoutManager = GridLayoutManager(this, 1)
+        time_sche_calendar.addItemDecoration(GridItemDecoration(10, 2))
+        time_sche_calendar.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.HORIZONTAL
+            )
+        )
+        /*time_sche_calendar.addItemDecoration(
+                DividerItemDecoration(
+                    this,
+                    LinearLayoutManager.VERTICAL
+                )
+            )*/
 
-                    store2fragment = Store2Fragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.frame_layout, store2fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
 
-                }
-                R.id.store3 -> {
+        day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
 
-                    store3fragment = Store3Fragment()
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.frame_layout, store3fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+        //This will for default android divider
+        day_sche_calendar.addItemDecoration(GridItemDecoration(10, 2))
+        day_sche_calendar.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.HORIZONTAL
+            )
+        )
+        day_sche_calendar.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
 
-                }
 
+        val timeListAdapter = TimeIntervalAdapter()
+        time_sche_calendar.adapter = timeListAdapter
+        timeListAdapter.setTimeList(timeSettingData())
+
+        val dayListAdapter = DayListAdapter()
+        day_sche_calendar.adapter = dayListAdapter
+        dayListAdapter.setDayList(generateDummyData())
+
+        val daycal: RecyclerView = findViewById(R.id.day_sche_calendar)
+        val timecal: RecyclerView = findViewById(R.id.time_sche_calendar)
+        val scrollListener1: RecyclerView.OnScrollListener
+        lateinit var scrollListener2: RecyclerView.OnScrollListener
+        scrollListener1 = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                daycal.removeOnScrollListener(scrollListener2)
+                daycal.scrollBy(dx, dy)
+                daycal.addOnScrollListener(scrollListener2)
+            }
+        }
+        scrollListener2 = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                timecal.removeOnScrollListener(scrollListener1)
+                timecal.scrollBy(dx, dy)
+                timecal.addOnScrollListener(scrollListener1)
 
             }
-            true
         }
+        timecal.addOnScrollListener(scrollListener1)
+        daycal.addOnScrollListener(scrollListener2)
+
+
+    }
+
+    private fun timeSettingData(): ArrayList<TimeIntervalModel> {
+        var i: Int = 0
+        val listOfTime = ArrayList<TimeIntervalModel>()
+        var timeModel: TimeIntervalModel
+
+        while (i < 12) {
+            timeModel = TimeIntervalModel(i, "am")
+            listOfTime.add(timeModel)
+            i++
+        }
+        i = 0
+        while (i < 12) {
+            timeModel = TimeIntervalModel(i, "pm")
+            listOfTime.add(timeModel)
+            i++
+        }
+        return listOfTime
+    }
+
+    private fun generateDummyData(): ArrayList<DayScheduleModel> {
+        val listOfDay = ArrayList<DayScheduleModel>()
+        var i: Int = 0
+
+//        val listOfTime =ArrayList<TimeIntervalModel>()
+//        var timeModel : TimeIntervalModel
+        var dayModel: DayScheduleModel
+
+        while (i < 7 * 24) {
+            dayModel = DayScheduleModel()
+            listOfDay.add(dayModel)
+            i++
+        }
+
+        return listOfDay
     }
 }
