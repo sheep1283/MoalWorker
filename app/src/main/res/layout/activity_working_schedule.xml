@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,147 +7,53 @@
 
 
     <LinearLayout
-        android:id="@+id/Linear1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/Linear2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/soon"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="0.7"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="oon"
-            app:layout_constraintBottom_toTopOf="@id/Linear2"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/mon" />
+        <include
+            android:id="@+id/cal_view_1"
+            layout="@layout/cal_view"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="2" />
 
-        <TextView
-            android:id="@+id/mon"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="MON"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toLeftOf="@id/soon"
-            app:layout_constraintRight_toLeftOf="@id/tues" />
-
-        <TextView
-            android:id="@+id/tues"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="TUE"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/mon"
-            app:layout_constraintRight_toLeftOf="@id/wed" />
-
-        <TextView
-            android:id="@+id/wed"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="WED"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/tues"
-            app:layout_constraintRight_toLeftOf="@id/thur" />
-
-        <TextView
-            android:id="@+id/thur"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="THUR"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/wed"
-            app:layout_constraintRight_toLeftOf="@id/fri" />
-
-        <TextView
-            android:id="@+id/fri"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="FRI"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/thur"
-            app:layout_constraintRight_toLeftOf="@id/sat" />
-
-        <TextView
-            android:id="@+id/sat"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-            android:gravity="center_horizontal"
-            android:text="SAT"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/fri"
-            app:layout_constraintRight_toLeftOf="@id/sun" />
-
-        <TextView
-            android:id="@+id/sun"
-            android:layout_width="0dp"
-            android:layout_height="23dp"
-            android:layout_weight="1"
-            android:background="@drawable/line"
-
-            android:gravity="center_horizontal"
-            android:text="SUN"
-            app:layout_constraintBottom_toTopOf="@id/day_sche_calendar"
-            app:layout_constraintLeft_toRightOf="@id/sat"
-            app:layout_constraintRight_toRightOf="parent" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Linear2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Linear1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/time_sche_calendar"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:overScrollMode="never"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/day_sche_calendar" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/day_sche_calendar"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
             android:layout_weight="7"
-            android:overScrollMode="never"
-            app:layout_constraintLeft_toRightOf="@id/time_sche_calendar"
-            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/corners">
 
-            />
+            <include
+                android:id="@+id/topView"
+                layout="@layout/day_calendar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+
+        <include
+            android:id="@+id/cal_view_2"
+            layout="@layout/cal_view"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="2" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="8"
+            android:background="@drawable/corners" />
 
     </LinearLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
