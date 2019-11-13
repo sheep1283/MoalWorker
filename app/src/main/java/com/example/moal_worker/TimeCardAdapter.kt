@@ -20,6 +20,8 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>): RecyclerView.A
         holder.bind(data)
     }
 
+    
+
     class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.part_time_cardview, parent, false)) {
         fun bind(data: JobTimeForReading) {
