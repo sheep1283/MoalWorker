@@ -8,7 +8,9 @@ class JobTimeForReading (
     var endHour : Int,
     var endMin : Int,
     var requirePeopleNum : Int,
+    val storeName: String,
     val positionName : String,
     val partName : String,
     val jobDay: String
+
 )

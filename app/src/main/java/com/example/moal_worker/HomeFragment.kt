@@ -40,26 +40,59 @@ class HomeFragment : Fragment() {
         }
         return v
     }
+    val requestclicked  = 1
+    var selectedstore = ""
+    var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
+    val dirFire: DatabaseReference = rootRef
+    val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
+    var storeList = arrayListOf<JobInfoForReading>()
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         super.onViewCreated(v, savedInstanceState)
-        var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-        val dirFire: DatabaseReference = rootRef.child("노랑통닭 홍대점")
-        val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
+
+
+
 
 
         initView(v)
 
 
-        dirFire.child("WorkingPart").addValueEventListener(object : ValueEventListener {
+        /* dirFire.addValueEventListener(object : ValueEventListener {
 
             val dayListAdapter = DayListAdapter()
+
+
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            override fun onDataChange(p0: DataSnapshot) {
-                for (snapShotDays: DataSnapshot in p0.children) { //요일
+             override fun onDataChange(p0: DataSnapshot) {
+                if (intent.hasExtra("clickedstore")){
+                    selectedstore = intent.getStringExtra("clickedstore")
+                }
+                else{
+                    selectedstore = "노랑통닭 홍대점"
+                }
+
+                storeList.clear()
+
+                for (snapShotStore: DataSnapshot in p0.children) {
+                    val storename = snapShotStore.key
+                    if (storename == null) {
+
+                    } else {
+                        val jobInfoForReading = JobInfoForReading(storename)
+                        storeList.add(jobInfoForReading)
+                    }
+                }
+                store_list.apply {
+                    layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = StoreCardAdapter(storeList)
+                }
+                timeList.clear()
+                val name = selectedstore
+                for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                         for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
                             val day = snapShotDays.key
@@ -71,99 +104,94 @@ class HomeFragment : Fragment() {
                             if (jobTimeInfo == null || day == null || position == null || part == null) {
 
                             } else {
-
                                 val jobTimeForReading = JobTimeForReading(
                                     jobTimeInfo.startHour,
                                     jobTimeInfo.startMin,
                                     jobTimeInfo.endHour,
                                     jobTimeInfo.endMin,
                                     jobTimeInfo.requirePeopleNum,
+                                    name,
                                     position,
                                     part,
                                     day
+
                                 )
                                 timeList.add(jobTimeForReading)
-                                //jobTimes.add(jobTimeForReading)
                             }
                         }
-
                     }
+                }
+               /* time_list.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = TimeCardAdapter(timeList, listOfDay)
+                    day_sche_calendar.apply{
+                        day_sche_calendar.adapter = dayListAdapter
+                        dayListAdapter.setDayList(listOfDay)
+                    }//이 코드 필요!*/
+
+                    // jobTimes =timecardAdapter.copy()
 
                 }
-               /* //time_list.run {
-                    time_list.layoutManager = LinearLayoutManager(context)
-                    time_list.adapter = TimeCardAdapter(timeList, listOfDay)
-                    day_sche_calendar.apply {
-                    day_sche_calendar.adapter = dayListAdapter
-                    dayListAdapter.setDayList(listOfDay)
-              //  }
-                    //이 코드 필요!
-                }*/
-
 
             }
-        })
+        })*/
 
 
+        /* var jobTimes = timeList
+        // var timeIntList: ArrayList<Int> = arrayListOf()
+         var i = 0 //day 인덱스 변수
+         for (jobTimeForReading in jobTimes) {
+             //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
+             val dayListAdapter = DayListAdapter()
+             day_sche_calendar.adapter = dayListAdapter
+             //dayListAdapter.setDayList(generateDummyData())
+             val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
+            // var dayModel: DayScheduleModel
+
+             val day = jobTimeForReading.jobDay
+             val dayList = day.split("  ")
+             var dayInt = 0
+             for (day in dayList) { // time 화)10:00∼13:00
+                 when (day[i].toString()) {
+                     "월" -> dayInt = 1
+                     "화" -> dayInt = 2
+                     "수" -> dayInt = 3
+                     "목" -> dayInt = 4
+                     "금" -> dayInt = 5
+                     "토" -> dayInt = 6
+                     "일" -> dayInt = 0
+                 }
+                 i++
+             }
 
 
+             val startHour = jobTimeForReading.startHour
+             val startMin = (jobTimeForReading.startMin) * (1 / 60)
+             val endHour = jobTimeForReading.endHour
+             val endMin = (jobTimeForReading.endMin) * (1 / 60)
+             val timeInt: Float= 0.5F
+             var start: Float= (startHour + startMin).toFloat()
+             val end: Int = endHour + endMin
+             val viewnum: Int = 2 * (end - start).toInt()
+             var t: Int = 0 //listofDay 인덱스 변수
+             while (start < end) {
 
+                 /*  val plusPlan : ViewGroup.LayoutParams = item_day_constraint.getLayoutParams()
+                   plusPlan.width = ViewGroup.LayoutParams.MATCH_PARENT
+                   plusPlan.height =viewnum*27
+                   item_day_constraint.setLayoutParams(plusPlan)*/
 
-       /* var jobTimes = timeList
-       // var timeIntList: ArrayList<Int> = arrayListOf()
-        var i = 0 //day 인덱스 변수
-        for (jobTimeForReading in jobTimes) {
-            //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
-            val dayListAdapter = DayListAdapter()
-            day_sche_calendar.adapter = dayListAdapter
-            //dayListAdapter.setDayList(generateDummyData())
-            val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
-           // var dayModel: DayScheduleModel
+                 t = dayInt + (7 * 2 * start).toInt()
+                 //dayModel = DayScheduleModel()
+                 listOfDay[t] = DayScheduleModel(null, null, Color.rgb(129, 209, 191))
+                 start = (start + timeInt)
 
-            val day = jobTimeForReading.jobDay
-            val dayList = day.split("  ")
-            var dayInt = 0
-            for (day in dayList) { // time 화)10:00∼13:00
-                when (day[i].toString()) {
-                    "월" -> dayInt = 1
-                    "화" -> dayInt = 2
-                    "수" -> dayInt = 3
-                    "목" -> dayInt = 4
-                    "금" -> dayInt = 5
-                    "토" -> dayInt = 6
-                    "일" -> dayInt = 0
-                }
-                i++
-            }
+             }
+             dayListAdapter.setDayList(listOfDay)
+         }
+         timeList.clear()*/
 
-
-            val startHour = jobTimeForReading.startHour
-            val startMin = (jobTimeForReading.startMin) * (1 / 60)
-            val endHour = jobTimeForReading.endHour
-            val endMin = (jobTimeForReading.endMin) * (1 / 60)
-            val timeInt: Float= 0.5F
-            var start: Float= (startHour + startMin).toFloat()
-            val end: Int = endHour + endMin
-            val viewnum: Int = 2 * (end - start).toInt()
-            var t: Int = 0 //listofDay 인덱스 변수
-            while (start < end) {
-
-                /*  val plusPlan : ViewGroup.LayoutParams = item_day_constraint.getLayoutParams()
-                  plusPlan.width = ViewGroup.LayoutParams.MATCH_PARENT
-                  plusPlan.height =viewnum*27
-                  item_day_constraint.setLayoutParams(plusPlan)*/
-
-                t = dayInt + (7 * 2 * start).toInt()
-                //dayModel = DayScheduleModel()
-                listOfDay[t] = DayScheduleModel(null, null, Color.rgb(129, 209, 191))
-                start = (start + timeInt)
-
-            }
-            dayListAdapter.setDayList(listOfDay)
-        }
-        timeList.clear()*/
-
-        }
+    }
 
 
 

@@ -16,9 +16,10 @@ import kotlin.collections.ArrayList
 
 class WorkingScheduleActivity : AppCompatActivity() {
 
+    val requestclicked  = 1
+    var selectedstore = ""
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    val dirFire: DatabaseReference = rootRef.child("노랑통닭 홍대점")
-
+    val dirFire: DatabaseReference = rootRef
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +31,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
         var timeList =arrayListOf<JobTimeForReading>()
         var jobTimes = arrayListOf<JobTimeForReading>()
         val timecardAdapter = TimeCardAdapter(timeList, listOfDay)
+        var storeList = arrayListOf<JobInfoForReading>()
 
-        dirFire.child("WorkingPart").addValueEventListener(object: ValueEventListener {
+        dirFire.addValueEventListener(object : ValueEventListener {
 
             val dayListAdapter = DayListAdapter()
 
@@ -41,22 +43,55 @@ class WorkingScheduleActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+                if (intent.hasExtra("clickedstore")){
+                    selectedstore = intent.getStringExtra("clickedstore")
+                }
+                else{
+                    selectedstore = "노랑통닭 홍대점"
+                }
+
+                storeList.clear()
+
+                for (snapShotStore: DataSnapshot in p0.children) {
+                    val storename = snapShotStore.key
+                    if (storename == null) {
+
+                    } else {
+                        val jobInfoForReading = JobInfoForReading(storename)
+                        storeList.add(jobInfoForReading)
+                    }
+                }
+                store_list.apply {
+                    layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = StoreCardAdapter(storeList)
+                }
                 timeList.clear()
-                for (snapShotDays: DataSnapshot in p0.children){ //요일
-                    for(snapShotWorkingParts : DataSnapshot in snapShotDays.children){ //서빙
-                        for(snapShotTime: DataSnapshot in snapShotWorkingParts.children){ //오미마
+                val name = selectedstore
+                for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                    for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
+                        for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
                             val day = snapShotDays.key
                             val position = snapShotWorkingParts.key
                             val part = snapShotTime.key
-                            val jobTimeInfo: JobTimeInfo? = snapShotTime.getValue(JobTimeInfo::class.java)
+                            val jobTimeInfo: JobTimeInfo? =
+                                snapShotTime.getValue(JobTimeInfo::class.java)
 
-                            if (jobTimeInfo == null || day == null || position == null || part == null){
+                            if (jobTimeInfo == null || day == null || position == null || part == null) {
 
-                            }else{
+                            } else {
+                                val jobTimeForReading = JobTimeForReading(
+                                    jobTimeInfo.startHour,
+                                    jobTimeInfo.startMin,
+                                    jobTimeInfo.endHour,
+                                    jobTimeInfo.endMin,
+                                    jobTimeInfo.requirePeopleNum,
+                                    name,
+                                    position,
+                                    part,
+                                    day
 
-
-                                val jobTimeForReading = JobTimeForReading(jobTimeInfo.startHour,jobTimeInfo.startMin,jobTimeInfo.endHour,jobTimeInfo.endMin,
-                                    jobTimeInfo.requirePeopleNum,position,part,day)
+                                )
                                 timeList.add(jobTimeForReading)
                             }
                         }
@@ -70,7 +105,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         dayListAdapter.setDayList(listOfDay)
                     }//이 코드 필요!
 
-                   // jobTimes =timecardAdapter.copy()
+                    // jobTimes =timecardAdapter.copy()
 
                 }
 
@@ -102,11 +137,11 @@ class WorkingScheduleActivity : AppCompatActivity() {
         )
 
         time_sche_calendar.addItemDecoration(
-                DividerItemDecoration(
-                    this,
-                    LinearLayoutManager.VERTICAL
-                )
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.VERTICAL
             )
+        )
 
         day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
 
@@ -195,4 +230,3 @@ class WorkingScheduleActivity : AppCompatActivity() {
 }
 
 //extension or member ?
-

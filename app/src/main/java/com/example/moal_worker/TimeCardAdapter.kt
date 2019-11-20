@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.day_calendar.*
 import kotlinx.android.synthetic.main.part_time_cardview.view.*
 
@@ -74,6 +76,9 @@ class TimeCardAdapter(
 
     class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.part_time_cardview, parent, false)) {
+        val database = FirebaseDatabase.getInstance().reference
+        var myRef : DatabaseReference = FirebaseDatabase.getInstance().getReference()
+        val dirFire : DatabaseReference = myRef.child("users")
 
         fun bind(data: JobTimeForReading) {
             itemView.cardView_startTime.text =
@@ -84,7 +89,19 @@ class TimeCardAdapter(
             itemView.cardView_position.text = data.positionName
             itemView.cardView_partName.text = data.partName
             itemView.cardView_day.text = data.jobDay + "요일"
+
+            itemView.Layout.setOnClickListener {
+                database.child(data.storeName).child("WorkingPart")
+                    .child(data.jobDay)
+                    .child(data.positionName)
+                    .child(data.partName)
+                    .child("RequestList")
+                    .child("J ini")
+                    .setValue("Request")
+
+            }
         }
+
         val v = inflater.inflate(R.layout.day_calendar, parent, false)
         // val include_cal_view : View = v.findViewById(R.id.cal_view_1)
         val day: RecyclerView = v.findViewById(R.id.day_sche_calendar)
@@ -96,7 +113,7 @@ class TimeCardAdapter(
         }
 
 
-        }
+    }
 
 
 
