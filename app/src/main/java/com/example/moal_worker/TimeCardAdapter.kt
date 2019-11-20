@@ -1,11 +1,20 @@
 package com.example.moal_worker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_working_schedule.*
 import kotlinx.android.synthetic.main.part_time_cardview.view.*
+import kotlinx.android.synthetic.main.store_list_cardview.view.*
+import kotlin.coroutines.coroutineContext
 
 class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>): RecyclerView.Adapter<TimeCardAdapter.ViewHolder>(){
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeCardAdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(inflater, parent)
@@ -20,10 +29,13 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>): RecyclerView.A
         holder.bind(data)
     }
 
-    
+
 
     class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.part_time_cardview, parent, false)) {
+        val database = FirebaseDatabase.getInstance().reference
+        var myRef : DatabaseReference = FirebaseDatabase.getInstance().getReference()
+        val dirFire : DatabaseReference = myRef.child("users")
         fun bind(data: JobTimeForReading) {
             itemView.cardView_startTime.text =  data.startHour.toString()+" : "+data.startMin.toString()
             itemView.cardView_endTime.text = data.endHour.toString()+" : "+data.endMin.toString()
@@ -31,6 +43,23 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>): RecyclerView.A
             itemView.cardView_position.text = data.positionName
             itemView.cardView_partName.text = data.partName
             itemView.cardView_day.text = data.jobDay+"요일"
+
+
+            itemView.Layout.setOnClickListener {
+                database.child(data.storeName).child("WorkingPart")
+                    .child(data.jobDay)
+                    .child(data.positionName)
+                    .child(data.partName)
+                    .child("RequestList")
+                    .child("J ini")
+                    .setValue("Request")
+
+            }
+
+
         }
+
+    }
+
 }
-}
+

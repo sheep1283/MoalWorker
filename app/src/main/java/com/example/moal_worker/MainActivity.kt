@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun writeNewUser(userId : String, email : String, password : String){
         val user = User(email, password)
-        database.child("users").child(userId).setValue(user)
+        database.child("users").child("jini").child("storelist").setValue("노랑통닭 홍대점")
 
     }
 

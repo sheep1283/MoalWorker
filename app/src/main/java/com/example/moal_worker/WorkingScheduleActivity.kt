@@ -1,8 +1,13 @@
 package com.example.moal_worker
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,12 +17,15 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_working_schedule.*
 import kotlinx.android.synthetic.main.day_calendar.day_sche_calendar
 import kotlinx.android.synthetic.main.day_calendar.time_sche_calendar
+import kotlinx.android.synthetic.main.store_list_cardview.view.*
 
 
 class WorkingScheduleActivity : AppCompatActivity() {
 
+    var selectedstore = ""
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    val dirFire: DatabaseReference = rootRef.child("노랑통닭 홍대점")
+    val dirFire: DatabaseReference = rootRef
+    val requestclicked  = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,29 +33,67 @@ class WorkingScheduleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_working_schedule)
 
 
-        var timeList =arrayListOf<JobTimeForReading>()
+        var timeList = arrayListOf<JobTimeForReading>()
+        var storeList = arrayListOf<JobInfoForReading>()
 
-        dirFire.child("WorkingPart").addValueEventListener(object: ValueEventListener {
+
+        dirFire.addValueEventListener(object : ValueEventListener {
 
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+
+                if (intent.hasExtra("clickedstore")){
+                    selectedstore = intent.getStringExtra("clickedstore")
+                }
+                else{
+                    selectedstore = "노랑통닭 홍대점"
+                }
+
+                storeList.clear()
+
+                for (snapShotStore: DataSnapshot in p0.children) {
+                    val storename = snapShotStore.key
+                    if (storename == null) {
+
+                    } else {
+                        val jobInfoForReading = JobInfoForReading(storename)
+                        storeList.add(jobInfoForReading)
+                    }
+                }
+                store_list.apply {
+                    layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = StoreCardAdapter(storeList)
+                }
                 timeList.clear()
-                for (snapShotDays: DataSnapshot in p0.children){ //요일
-                    for(snapShotWorkingParts : DataSnapshot in snapShotDays.children){ //서빙
-                        for(snapShotTime: DataSnapshot in snapShotWorkingParts.children){ //오미마
+                val name = selectedstore
+                for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                    for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
+                        for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
                             val day = snapShotDays.key
                             val position = snapShotWorkingParts.key
                             val part = snapShotTime.key
-                            val jobTimeInfo: JobTimeInfo? = snapShotTime.getValue(JobTimeInfo::class.java)
+                            val jobTimeInfo: JobTimeInfo? =
+                                snapShotTime.getValue(JobTimeInfo::class.java)
 
-                            if (jobTimeInfo == null || day == null || position == null || part == null){
+                            if (jobTimeInfo == null || day == null || position == null || part == null) {
 
-                            }else{
-                                val jobTimeForReading = JobTimeForReading(jobTimeInfo.startHour,jobTimeInfo.startMin,jobTimeInfo.endHour,jobTimeInfo.endMin,
-                                    jobTimeInfo.requirePeopleNum,position,part,day)
+                            } else {
+                                val jobTimeForReading = JobTimeForReading(
+                                    jobTimeInfo.startHour,
+                                    jobTimeInfo.startMin,
+                                    jobTimeInfo.endHour,
+                                    jobTimeInfo.endMin,
+                                    jobTimeInfo.requirePeopleNum,
+                                    name,
+                                    position,
+                                    part,
+                                    day
+
+                                )
                                 timeList.add(jobTimeForReading)
                             }
                         }
@@ -57,12 +103,15 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     layoutManager = LinearLayoutManager(context)
                     adapter = TimeCardAdapter(timeList)
                 }
+
             }
         })
 
         initView()
 
     }
+
+
 
 
 
