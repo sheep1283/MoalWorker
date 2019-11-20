@@ -15,6 +15,7 @@ import kotlin.coroutines.coroutineContext
 class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>): RecyclerView.Adapter<TimeCardAdapter.ViewHolder>(){
 
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeCardAdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(inflater, parent)
