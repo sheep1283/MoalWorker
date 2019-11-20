@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_time_constraint"
     android:layout_width="match_parent"
-    android:layout_height="60dp">
+    android:layout_height="64.5dp">
 
 
     <TextView
@@ -14,7 +14,6 @@
         android:textColor="@android:color/black"
         android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.595"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/apm"
@@ -29,7 +28,6 @@
 
         android:textColor="@android:color/black"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/timeNumbers"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

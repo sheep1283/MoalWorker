@@ -8,12 +8,63 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:id="@+id/button_workingschedule"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Add Schedule"
-        android:textColor="@color/whiteColor" />
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <include
+                android:id="@+id/cal_view_1"
+                layout="@layout/cal_view"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="6dp"
+                android:layout_weight="7"
+                android:background="@drawable/corners">
+
+                <include
+                    android:id="@+id/topView"
+                    layout="@layout/day_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+
+            <include
+                android:id="@+id/cal_view_2"
+                layout="@layout/cal_view"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="2" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="6dp"
+                android:layout_weight="8"
+                android:background="@drawable/corners" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
 
 </FrameLayout>

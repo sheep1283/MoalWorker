@@ -1,13 +1,7 @@
 package com.example.moal_worker
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,34 +11,38 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_working_schedule.*
 import kotlinx.android.synthetic.main.day_calendar.day_sche_calendar
 import kotlinx.android.synthetic.main.day_calendar.time_sche_calendar
-import kotlinx.android.synthetic.main.store_list_cardview.view.*
+import kotlin.collections.ArrayList
 
 
 class WorkingScheduleActivity : AppCompatActivity() {
 
+    val requestclicked  = 1
     var selectedstore = ""
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     val dirFire: DatabaseReference = rootRef
-    val requestclicked  = 1
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
 
 
-        var timeList = arrayListOf<JobTimeForReading>()
+        initView()
+        val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
+        var timeList =arrayListOf<JobTimeForReading>()
+        var jobTimes = arrayListOf<JobTimeForReading>()
+        val timecardAdapter = TimeCardAdapter(timeList, listOfDay)
         var storeList = arrayListOf<JobInfoForReading>()
 
-
         dirFire.addValueEventListener(object : ValueEventListener {
+
+            val dayListAdapter = DayListAdapter()
+
 
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-
                 if (intent.hasExtra("clickedstore")){
                     selectedstore = intent.getStringExtra("clickedstore")
                 }
@@ -101,50 +99,61 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
                 time_list.apply {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = TimeCardAdapter(timeList)
+                    adapter = TimeCardAdapter(timeList, listOfDay)
+                    day_sche_calendar.apply{
+                        day_sche_calendar.adapter = dayListAdapter
+                        dayListAdapter.setDayList(listOfDay)
+                    }//이 코드 필요!
+
+                    // jobTimes =timecardAdapter.copy()
+
                 }
 
             }
         })
 
-        initView()
+
+
+
+
+
+
+
 
     }
 
 
 
-
-
-
-    private fun initView() {
+    fun initView() {
 
 
         time_sche_calendar.layoutManager = GridLayoutManager(this, 1)
-        time_sche_calendar.addItemDecoration(GridItemDecoration(10, 2))
+        time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
         time_sche_calendar.addItemDecoration(
             DividerItemDecoration(
                 this,
                 LinearLayoutManager.HORIZONTAL
             )
         )
-        /*time_sche_calendar.addItemDecoration(
-                DividerItemDecoration(
-                    this,
-                    LinearLayoutManager.VERTICAL
-                )
-            )*/
 
+        time_sche_calendar.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
 
         day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
 
         //This will for default android divider
-        day_sche_calendar.addItemDecoration(GridItemDecoration(10, 2))
+        day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
         day_sche_calendar.addItemDecoration(
             DividerItemDecoration(
                 this,
                 LinearLayoutManager.HORIZONTAL
             )
         )
+
         day_sche_calendar.addItemDecoration(
             DividerItemDecoration(
                 this,
@@ -193,14 +202,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
         val listOfTime = ArrayList<TimeIntervalModel>()
         var timeModel: TimeIntervalModel
 
-        while (i < 12) {
-            timeModel = TimeIntervalModel(i, "am")
-            listOfTime.add(timeModel)
-            i++
-        }
-        i = 0
-        while (i < 12) {
-            timeModel = TimeIntervalModel(i, "pm")
+        while (i < 24) {
+            timeModel = TimeIntervalModel(i, "시")
             listOfTime.add(timeModel)
             i++
         }
@@ -215,7 +218,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
 //        var timeModel : TimeIntervalModel
         var dayModel: DayScheduleModel
 
-        while (i < 7 * 24) {
+        while (i < 7 * 48) {
             dayModel = DayScheduleModel()
             listOfDay.add(dayModel)
             i++
@@ -225,3 +228,5 @@ class WorkingScheduleActivity : AppCompatActivity() {
     }
 
 }
+
+//extension or member ?
