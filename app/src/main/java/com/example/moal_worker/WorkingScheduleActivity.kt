@@ -1,5 +1,6 @@
 package com.example.moal_worker
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -30,10 +31,10 @@ class WorkingScheduleActivity : AppCompatActivity() {
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
         var timeList =arrayListOf<JobTimeForReading>()
         var jobTimes = arrayListOf<JobTimeForReading>()
-        val timecardAdapter = TimeCardAdapter(timeList, listOfDay)
+        val timecardAdapter = TimeCardAdapter(timeList)
         var storeList = arrayListOf<JobInfoForReading>()
 
-        dirFire.addValueEventListener(object : ValueEventListener {
+        val postListener = object : ValueEventListener {
 
             val dayListAdapter = DayListAdapter()
 
@@ -99,18 +100,58 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
                 time_list.apply {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = TimeCardAdapter(timeList, listOfDay)
-                    day_sche_calendar.apply{
-                        day_sche_calendar.adapter = dayListAdapter
-                        dayListAdapter.setDayList(listOfDay)
-                    }//이 코드 필요!
-
+                    adapter = TimeCardAdapter(timeList)
                     // jobTimes =timecardAdapter.copy()
 
                 }
 
+                for (jobTimeForReading in timeList) {
+                    //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
+                    val day = jobTimeForReading.jobDay
+                    var dayInt = 0
+                    when (day) {
+                        "월" -> dayInt = 0
+                        "화" -> dayInt = 1
+                        "수" -> dayInt = 2
+                        "목" -> dayInt = 3
+                        "금" -> dayInt = 4
+                        "토" -> dayInt = 5
+                        "일" -> dayInt = 6
+                    }
+
+                    val positionName: String = jobTimeForReading.positionName
+                    val partName: String = jobTimeForReading.partName
+                    val startHour = jobTimeForReading.startHour
+                    val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
+                    val endHour = jobTimeForReading.endHour
+                    val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
+                    val timeInt: Float = 0.5F
+                    var start: Float = (startHour + startMin).toFloat()
+                    val end: Float = endHour + endMin
+                    val viewnum: Int = 2 * (end - start).toInt()
+                    var t: Int = 0 //listofDay 인덱스 변수
+                    while (start < end) {
+
+
+
+                        t = dayInt + (7 * 2 * start).toInt()
+                        //dayModel = DayScheduleModel()
+                        listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                        start = (start + timeInt)
+
+                    }
+
+                }
+                day_sche_calendar.apply{
+                    val dayListAdapter = DayListAdapter()
+                    day_sche_calendar.adapter = dayListAdapter
+                    dayListAdapter.setDayList(listOfDay)
+                }
+
+
             }
-        })
+        }
+        dirFire.addValueEventListener(postListener)
 
 
 
