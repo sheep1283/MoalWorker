@@ -1,8 +1,8 @@
 package com.example.moal_worker
 
-class TimeIntervalModel(time: Int, apm:String) {
+class TimeIntervalModel(time: Int) {
     val time = time
-    val apm=apm
+    //al apm=apm
 
     //time구간은 변하면 안되니까 val
 }

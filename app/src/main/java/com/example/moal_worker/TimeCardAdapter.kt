@@ -47,6 +47,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
             itemView.cardView_partName.text = data.partName
             itemView.cardView_day.text = data.jobDay + "요일"
 
+
             itemView.Layout.setOnClickListener {
                 if(data.storeName != null){ //임시 null허용 처리
                 database.child(data.storeName).child("WorkingPart")

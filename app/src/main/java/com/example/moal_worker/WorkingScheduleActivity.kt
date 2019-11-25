@@ -17,6 +17,7 @@ import kotlin.collections.ArrayList
 
 class WorkingScheduleActivity : AppCompatActivity() {
 
+
     val requestclicked  = 1
     var selectedstore = ""
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
@@ -25,7 +26,19 @@ class WorkingScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
+        val colors = ArrayList<Int>()
 
+        colors.add(Color.rgb(250, 190, 190))//c1
+        colors.add(Color.rgb(248, 237, 170))//c2
+        colors.add(Color.rgb(162,194,106))//c3
+        colors.add(Color.rgb(166, 235, 142))//c4
+        colors.add(Color.rgb(125, 211, 240))//하늜색
+        //colors.add(Color.rgb(99, 135, 245))
+        colors.add(Color.rgb(173, 211, 255))//c5
+        colors.add(Color.rgb(106, 196, 185))//c9
+        colors.add(Color.rgb(215, 190, 252))//c7
+        colors.add(Color.rgb(211, 181, 228))//c8
+        colors.add(Color.rgb(172, 165, 165))//c9
 
         initView()
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
@@ -98,12 +111,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         }
                     }
                 }
-                time_list.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = TimeCardAdapter(timeList)
-                    // jobTimes =timecardAdapter.copy()
-
-                }
+                var i :Int =0
 
                 for (jobTimeForReading in timeList) {
                     //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
@@ -118,7 +126,6 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         "토" -> dayInt = 5
                         "일" -> dayInt = 6
                     }
-
                     val positionName: String = jobTimeForReading.positionName
                     val partName: String = jobTimeForReading.partName
                     val startHour = jobTimeForReading.startHour
@@ -127,18 +134,31 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
                     val timeInt: Float = 0.5F
                     var start: Float = (startHour + startMin).toFloat()
+                    var st : Float = start
                     val end: Float = endHour + endMin
                     val viewnum: Int = 2 * (end - start).toInt()
                     var t: Int = 0 //listofDay 인덱스 변수
                     while (start < end) {
 
-
-
                         t = dayInt + (7 * 2 * start).toInt()
                         //dayModel = DayScheduleModel()
-                        listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                        if((start*2) == (st+end-1)) {
+                            listOfDay[t] = DayScheduleModel(positionName,null, colors[i])
+                        }
+                        else if((start*2) == st+end){
+                            listOfDay[t] = DayScheduleModel(null,partName, colors[i])
+                        }
+                        else{
+                            listOfDay[t] = DayScheduleModel(null,null, colors[i])
+                        }
                         start = (start + timeInt)
+                    }
 
+                    if(i == 8){
+                        i=0
+                    }
+                    else{
+                        i++
                     }
 
                 }
@@ -147,6 +167,13 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     day_sche_calendar.adapter = dayListAdapter
                     dayListAdapter.setDayList(listOfDay)
                 }
+                time_list.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = TimeCardAdapter(timeList)
+                    // jobTimes =timecardAdapter.copy()
+
+                }
+
 
 
             }
@@ -170,37 +197,34 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
         time_sche_calendar.layoutManager = GridLayoutManager(this, 1)
         time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
-        time_sche_calendar.addItemDecoration(
+        /*time_sche_calendar.addItemDecoration(
             DividerItemDecoration(
-                this,
+                activity,
                 LinearLayoutManager.HORIZONTAL
             )
-        )
-
-        time_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                LinearLayoutManager.VERTICAL
-            )
-        )
+        )*/
+        /*time_sche_calendar.addItemDecoration(
+                DividerItemDecoration(
+                    activity,
+                    LinearLayoutManager.VERTICAL
+                )
+            )*/
 
         day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
-
-        //This will for default android divider
         day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
-        day_sche_calendar.addItemDecoration(
+        /*day_sche_calendar.addItemDecoration(
             DividerItemDecoration(
-                this,
-                LinearLayoutManager.HORIZONTAL
-            )
-        )
+            activity,
+            LinearLayoutManager.HORIZONTAL
+        ))*/
 
-        day_sche_calendar.addItemDecoration(
+        /*day_sche_calendar.addItemDecoration(
             DividerItemDecoration(
-                this,
+                activity,
                 LinearLayoutManager.VERTICAL
             )
-        )
+        )*/
+
 
 
         val timeListAdapter = TimeIntervalAdapter()
@@ -223,6 +247,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 daycal.addOnScrollListener(scrollListener2)
             }
         }
+
         scrollListener2 = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -244,7 +269,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
         var timeModel: TimeIntervalModel
 
         while (i < 24) {
-            timeModel = TimeIntervalModel(i, "시")
+            timeModel = TimeIntervalModel(i)
             listOfTime.add(timeModel)
             i++
         }
