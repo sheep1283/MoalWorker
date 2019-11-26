@@ -27,6 +27,19 @@ class WorkingScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
+        val colors = ArrayList<Int>()
+
+        colors.add(Color.rgb(250, 190, 190))//c1
+        colors.add(Color.rgb(248, 237, 170))//c2
+        colors.add(Color.rgb(162, 194, 106))//c3
+        colors.add(Color.rgb(166, 235, 142))//c4
+        colors.add(Color.rgb(125, 211, 240))//하늜색
+        //colors.add(Color.rgb(99, 135, 245))
+        colors.add(Color.rgb(173, 211, 255))//c5
+        colors.add(Color.rgb(106, 196, 185))//c9
+        colors.add(Color.rgb(215, 190, 252))//c7
+        colors.add(Color.rgb(211, 181, 228))//c8
+        colors.add(Color.rgb(172, 165, 165))//c9
 
 
         initView()
@@ -151,11 +164,40 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         val viewnum: Int = 2 * (end - start).toInt()
                                         var t: Int = 0 //listofDay 인덱스 변수
                                         while (start < end) {
+
                                             t = dayInt + (7 * 2 * start).toInt()
                                             //dayModel = DayScheduleModel()
-                                            listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                            var se = st + end
+                                            var ts = start * 2
+                                            if (startMin != endMin) {
+                                                if (ts == (se - 1.5F)) {
+                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                } else if (ts == se - 0.5F) {
+                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                } else {
+                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                }
+                                            }
+                                            if (startMin == endMin) {
+                                                if ((start * 2) == (st + end - 1)) {
+                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                } else if ((start * 2) == st + end) {
+                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                } else {
+                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                }
+
+                                            }
+
                                             start = (start + timeInt)
                                         }
+
+                                        if (i == 9) {
+                                            i = 0
+                                        } else {
+                                            i++
+                                        }
+
 
                                     }
                                 }
@@ -229,11 +271,40 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                             val viewnum: Int = 2 * (end - start).toInt()
                                             var t: Int = 0 //listofDay 인덱스 변수
                                             while (start < end) {
+
                                                 t = dayInt + (7 * 2 * start).toInt()
                                                 //dayModel = DayScheduleModel()
-                                                listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                                var se = st + end
+                                                var ts = start * 2
+                                                if (startMin != endMin) {
+                                                    if (ts == (se - 1.5F)) {
+                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                    } else if (ts == se - 0.5F) {
+                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                    } else {
+                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                    }
+                                                }
+                                                if (startMin == endMin) {
+                                                    if ((start * 2) == (st + end - 1)) {
+                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                    } else if ((start * 2) == st + end) {
+                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                    } else {
+                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                    }
+
+                                                }
+
                                                 start = (start + timeInt)
                                             }
+
+                                            if (i == 9) {
+                                                i = 0
+                                            } else {
+                                                i++
+                                            }
+
 
                                         }
                                     }

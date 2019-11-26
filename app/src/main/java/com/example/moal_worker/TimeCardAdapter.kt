@@ -40,10 +40,8 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
         val dirFire : DatabaseReference = myRef.child("users")
 
         fun bind(data: JobTimeForReading) {
-            itemView.cardView_startTime.text =
-                data.startHour.toString() + " : " + data.startMin.toString()
-            itemView.cardView_endTime.text =
-                data.endHour.toString() + " : " + data.endMin.toString()
+            itemView.cardView_startTime.text =  String.format("%02d",data.startHour)+" : "+String.format("%02d",data.startMin)
+            itemView.cardView_endTime.text = String.format("%02d",data.endHour)+" : "+String.format("%02d",data.endMin)
             itemView.cardView_people.text = data.requirePeopleNum.toString() + " 명"
             itemView.cardView_position.text = data.positionName
             itemView.cardView_partName.text = data.partName
