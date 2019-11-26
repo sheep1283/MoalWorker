@@ -43,10 +43,8 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
 
 
         fun bind(data: JobTimeForReading) {
-            itemView.cardView_startTime.text =
-                data.startHour.toString() + " : " + data.startMin.toString()
-            itemView.cardView_endTime.text =
-                data.endHour.toString() + " : " + data.endMin.toString()
+            itemView.cardView_startTime.text =  String.format("%02d",data.startHour)+" : "+String.format("%02d",data.startMin)
+            itemView.cardView_endTime.text = String.format("%02d",data.endHour)+" : "+String.format("%02d",data.endMin)
             itemView.cardView_people.text = data.requirePeopleNum.toString() + " 명"
             itemView.cardView_position.text = data.positionName
             itemView.cardView_partName.text = data.partName
@@ -55,7 +53,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
             itemView.cardView_checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked){
                     if (data.storeName != null) { //임시 null허용 처리
-                        database.child(data.storeName).child("WorkingPart")
+                        database.child("stores").child(data.storeName).child("WorkingPart")
                             .child(data.jobDay)
                             .child(data.positionName)
                             .child(data.partName)
@@ -69,7 +67,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
                 else {
 
                     if (data.storeName != null) { //임시 null허용 처리
-                        database.child(data.storeName).child("WorkingPart")
+                        database.child("stores").child(data.storeName).child("WorkingPart")
                             .child(data.jobDay)
                             .child(data.positionName)
                             .child(data.partName)

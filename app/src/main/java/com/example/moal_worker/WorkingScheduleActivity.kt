@@ -29,6 +29,19 @@ class WorkingScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
+        val colors = ArrayList<Int>()
+
+        colors.add(Color.rgb(250, 190, 190))//c1
+        colors.add(Color.rgb(248, 237, 170))//c2
+        colors.add(Color.rgb(162, 194, 106))//c3
+        colors.add(Color.rgb(166, 235, 142))//c4
+        colors.add(Color.rgb(125, 211, 240))//하늜색
+        //colors.add(Color.rgb(99, 135, 245))
+        colors.add(Color.rgb(173, 211, 255))//c5
+        colors.add(Color.rgb(106, 196, 185))//c9
+        colors.add(Color.rgb(215, 190, 252))//c7
+        colors.add(Color.rgb(211, 181, 228))//c8
+        colors.add(Color.rgb(172, 165, 165))//c9
 
 
         initView()
@@ -56,7 +69,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
                 storeList.clear()
 
-                for (snapShotStore: DataSnapshot in p0.children) {
+                for (snapShotStore: DataSnapshot in p0.child("stores").children) {
                     val storename = snapShotStore.key
                     if (storename == null) {
 
@@ -72,7 +85,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
                 timeList.clear()
                 val name = selectedstore
-                for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                         for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
                             val day = snapShotDays.key
@@ -103,7 +116,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
                 var i: Int = 0
                 //이미 request된 스케줄 읽어오기. 일단 노랑통닭 홍대점만 읽지만, 등록된 스토어 전부 읽어야 함
-                for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                         for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
                             if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
@@ -153,11 +166,40 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         val viewnum: Int = 2 * (end - start).toInt()
                                         var t: Int = 0 //listofDay 인덱스 변수
                                         while (start < end) {
+
                                             t = dayInt + (7 * 2 * start).toInt()
                                             //dayModel = DayScheduleModel()
-                                            listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                            var se = st + end
+                                            var ts = start * 2
+                                            if (startMin != endMin) {
+                                                if (ts == (se - 1.5F)) {
+                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                } else if (ts == se - 0.5F) {
+                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                } else {
+                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                }
+                                            }
+                                            if (startMin == endMin) {
+                                                if ((start * 2) == (st + end - 1)) {
+                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                } else if ((start * 2) == st + end) {
+                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                } else {
+                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                }
+
+                                            }
+
                                             start = (start + timeInt)
                                         }
+
+                                        if (i == 9) {
+                                            i = 0
+                                        } else {
+                                            i++
+                                        }
+
 
                                     }
                                 }
@@ -167,11 +209,12 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
 
                 request_button.setOnClickListener {
-                    for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                    for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                         for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                             for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
                                 if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Checked") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                                     database
+                                        .child("stores")
                                         .child(selectedstore)
                                         .child("WorkingPart")
                                         .child(snapShotDays.key.toString())
@@ -231,11 +274,40 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                             val viewnum: Int = 2 * (end - start).toInt()
                                             var t: Int = 0 //listofDay 인덱스 변수
                                             while (start < end) {
+
                                                 t = dayInt + (7 * 2 * start).toInt()
                                                 //dayModel = DayScheduleModel()
-                                                listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                                var se = st + end
+                                                var ts = start * 2
+                                                if (startMin != endMin) {
+                                                    if (ts == (se - 1.5F)) {
+                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                    } else if (ts == se - 0.5F) {
+                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                    } else {
+                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                    }
+                                                }
+                                                if (startMin == endMin) {
+                                                    if ((start * 2) == (st + end - 1)) {
+                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                                                    } else if ((start * 2) == st + end) {
+                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                                                    } else {
+                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                                                    }
+
+                                                }
+
                                                 start = (start + timeInt)
                                             }
+
+                                            if (i == 9) {
+                                                i = 0
+                                            } else {
+                                                i++
+                                            }
+
 
                                         }
                                     }

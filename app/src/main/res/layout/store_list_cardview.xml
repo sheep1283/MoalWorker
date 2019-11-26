@@ -10,7 +10,7 @@
     android:layout_marginTop="2dp"
     android:layout_marginRight="5dp"
     android:layout_marginBottom="5dp"
-    card_view:cardCornerRadius="16dp"
+    card_view:cardCornerRadius="13dp"
     card_view:cardElevation="6dp"
     card_view:cardUseCompatPadding="false">
 
@@ -18,12 +18,12 @@
         android:id="@+id/cardview_storename"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorAccent"
         android:gravity="center_horizontal"
         android:text="일자리이름"
-        android:textSize="18sp"
-        android:textStyle="bold"
         android:textColor="@color/white"
-        android:background="@color/colorAccent"/>
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/StoreLayout"
