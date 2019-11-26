@@ -144,9 +144,9 @@ class HomeFragment : Fragment() {
                     val positionName: String = jobTimeForReading.positionName
                     val partName: String = jobTimeForReading.partName
                     val startHour = jobTimeForReading.startHour
-                    val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
+                    val startMin = (((jobTimeForReading.startMin)/6)*0.1).toFloat()
                     val endHour = jobTimeForReading.endHour
-                    val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
+                    val endMin = (((jobTimeForReading.endMin)/6)*0.1).toFloat()
                     val timeInt: Float = 0.5F
                     var start: Float = (startHour + startMin).toFloat()
                     var st : Float = start
@@ -164,20 +164,35 @@ class HomeFragment : Fragment() {
                             listOfDay[t] = DayScheduleModel(null, null, colors[i])
                         }
                         start = (start + timeInt)*/
-                        if((start*2) == (st+end-1)) {
+                        var se = st+end
+                        var ts = start*2
+                        if(startMin != endMin){
+                        if(ts == (se-1.5F)) {
                             listOfDay[t] = DayScheduleModel(positionName,null, colors[i])
                         }
-                        else if((start*2) == st+end){
+                        else if(ts == se-0.5F){
                             listOfDay[t] = DayScheduleModel(null,partName, colors[i])
                         }
                         else{
                             listOfDay[t] = DayScheduleModel(null,null, colors[i])
+                        }}
+                        if(startMin == endMin){
+                            if((start*2) == (st+end-1)) {
+                                listOfDay[t] = DayScheduleModel(positionName,null, colors[i])
+                            }
+                            else if((start*2) == st+end){
+                                listOfDay[t] = DayScheduleModel(null,partName, colors[i])
+                            }
+                            else{
+                                listOfDay[t] = DayScheduleModel(null,null, colors[i])
+                            }
+
                         }
                         start = (start + timeInt)
 
 
                     }
-                    if(i == 8){
+                    if(i == 9){
                         i=0
                     }
                     else{

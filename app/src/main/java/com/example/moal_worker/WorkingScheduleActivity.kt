@@ -30,7 +30,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
         colors.add(Color.rgb(250, 190, 190))//c1
         colors.add(Color.rgb(248, 237, 170))//c2
-        colors.add(Color.rgb(162,194,106))//c3
+        colors.add(Color.rgb(162, 194, 106))//c3
         colors.add(Color.rgb(166, 235, 142))//c4
         colors.add(Color.rgb(125, 211, 240))//하늜색
         //colors.add(Color.rgb(99, 135, 245))
@@ -42,7 +42,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
         initView()
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
-        var timeList =arrayListOf<JobTimeForReading>()
+        var timeList = arrayListOf<JobTimeForReading>()
         var jobTimes = arrayListOf<JobTimeForReading>()
         val timecardAdapter = TimeCardAdapter(timeList)
         var storeList = arrayListOf<JobInfoForReading>()
@@ -57,10 +57,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                if (intent.hasExtra("clickedstore")){
+                if (intent.hasExtra("clickedstore")) {
                     selectedstore = intent.getStringExtra("clickedstore")
-                }
-                else{
+                } else {
                     selectedstore = "노랑통닭 홍대점"
                 }
 
@@ -111,7 +110,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         }
                     }
                 }
-                var i :Int =0
+                var i: Int = 0
 
                 for (jobTimeForReading in timeList) {
                     //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
@@ -129,12 +128,12 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     val positionName: String = jobTimeForReading.positionName
                     val partName: String = jobTimeForReading.partName
                     val startHour = jobTimeForReading.startHour
-                    val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
+                    val startMin = (((jobTimeForReading.startMin) / 6) * 0.1).toFloat()
                     val endHour = jobTimeForReading.endHour
-                    val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
+                    val endMin = (((jobTimeForReading.endMin) / 6) * 0.1).toFloat()
                     val timeInt: Float = 0.5F
                     var start: Float = (startHour + startMin).toFloat()
-                    var st : Float = start
+                    var st: Float = start
                     val end: Float = endHour + endMin
                     val viewnum: Int = 2 * (end - start).toInt()
                     var t: Int = 0 //listofDay 인덱스 변수
@@ -142,27 +141,39 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
                         t = dayInt + (7 * 2 * start).toInt()
                         //dayModel = DayScheduleModel()
-                        if((start*2) == (st+end-1)) {
-                            listOfDay[t] = DayScheduleModel(positionName,null, colors[i])
+                        var se = st + end
+                        var ts = start * 2
+                        if (startMin != endMin) {
+                            if (ts == (se - 1.5F)) {
+                                listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                            } else if (ts == se - 0.5F) {
+                                listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                            } else {
+                                listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                            }
                         }
-                        else if((start*2) == st+end){
-                            listOfDay[t] = DayScheduleModel(null,partName, colors[i])
+                        if (startMin == endMin) {
+                            if ((start * 2) == (st + end - 1)) {
+                                listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
+                            } else if ((start * 2) == st + end) {
+                                listOfDay[t] = DayScheduleModel(null, partName, colors[i])
+                            } else {
+                                listOfDay[t] = DayScheduleModel(null, null, colors[i])
+                            }
+
                         }
-                        else{
-                            listOfDay[t] = DayScheduleModel(null,null, colors[i])
-                        }
+
                         start = (start + timeInt)
                     }
 
-                    if(i == 8){
-                        i=0
-                    }
-                    else{
+                    if (i == 9) {
+                        i = 0
+                    } else {
                         i++
                     }
 
                 }
-                day_sche_calendar.apply{
+                day_sche_calendar.apply {
                     val dayListAdapter = DayListAdapter()
                     day_sche_calendar.adapter = dayListAdapter
                     dayListAdapter.setDayList(listOfDay)
@@ -175,17 +186,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
 
 
-
             }
         }
         dirFire.addValueEventListener(postListener)
-
-
-
-
-
-
-
 
 
     }
