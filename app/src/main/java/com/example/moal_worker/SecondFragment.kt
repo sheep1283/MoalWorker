@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -29,12 +31,7 @@ class SecondFragment : Fragment() {
         // Inflate the layout for this fragment
 
         var v= inflater.inflate(R.layout.fragment_second, container, false)
-        val b1 : Button = v.run { findViewById(R.id.button4) }
-        b1.setOnClickListener {
-            database.child("한국항공대학교").child("WorkingPart").setValue("WorkingPart")
 
-
-        }
         return v
     }
 

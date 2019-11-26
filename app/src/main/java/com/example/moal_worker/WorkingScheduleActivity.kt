@@ -19,8 +19,11 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
     val requestclicked  = 1
     var selectedstore = ""
+
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     val dirFire: DatabaseReference = rootRef
+    val database = FirebaseDatabase.getInstance().reference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,44 +107,146 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     // jobTimes =timecardAdapter.copy()
 
                 }
+                //이미 신청된 시간표 읽어오는 for문. 여기서도 스토어는 등록된 스토어 전부 다 읽어야함.일단 노랑통닭 홍대점만 읽어옴
+                for (snapShotDays: DataSnapshot in p0.child("노랑통닭 홍대점").child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                    for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
+                        for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
+                            if (snapShotTime.child("RequestList").child("Jini").getValue() == "Request")  {
+                                for (jobTimeForReading in timeList) {
+                                    val jobTimeInfo: JobTimeInfo? =
+                                        snapShotTime.getValue(JobTimeInfo::class.java)
+                                    val day = snapShotDays.key
+                                    val position = snapShotWorkingParts.key
+                                    val part = snapShotTime.key
 
-                for (jobTimeForReading in timeList) {
-                    //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
-                    val day = jobTimeForReading.jobDay
-                    var dayInt = 0
-                    when (day) {
-                        "월" -> dayInt = 0
-                        "화" -> dayInt = 1
-                        "수" -> dayInt = 2
-                        "목" -> dayInt = 3
-                        "금" -> dayInt = 4
-                        "토" -> dayInt = 5
-                        "일" -> dayInt = 6
+                                    if (jobTimeInfo == null || day == null || position == null || part == null) {
+
+                                    }
+                                    else {
+                                        val jobTimeForReading = JobTimeForReading(
+                                            jobTimeInfo.startHour,
+                                            jobTimeInfo.startMin,
+                                            jobTimeInfo.endHour,
+                                            jobTimeInfo.endMin,
+                                            jobTimeInfo.requirePeopleNum,
+                                            name,
+                                            position,
+                                            part,
+                                            day
+                                        )
+                                        //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
+                                        var dayInt = 0
+                                        when (day) {
+                                            "월" -> dayInt = 0
+                                            "화" -> dayInt = 1
+                                            "수" -> dayInt = 2
+                                            "목" -> dayInt = 3
+                                            "금" -> dayInt = 4
+                                            "토" -> dayInt = 5
+                                            "일" -> dayInt = 6
+                                        }
+
+                                        val positionName: String = jobTimeForReading.positionName
+                                        val partName: String = jobTimeForReading.partName
+                                        val startHour = jobTimeForReading.startHour
+                                        val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
+                                        val endHour = jobTimeForReading.endHour
+                                        val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
+                                        val timeInt: Float = 0.5F
+                                        var start: Float = (startHour + startMin).toFloat()
+                                        val end: Float = endHour + endMin
+                                        val viewnum: Int = 2 * (end - start).toInt()
+                                        var t: Int = 0 //listofDay 인덱스 변수
+                                        while (start < end) {
+                                            t = dayInt + (7 * 2 * start).toInt()
+                                            //dayModel = DayScheduleModel()
+                                            listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                            start = (start + timeInt)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-
-                    val positionName: String = jobTimeForReading.positionName
-                    val partName: String = jobTimeForReading.partName
-                    val startHour = jobTimeForReading.startHour
-                    val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
-                    val endHour = jobTimeForReading.endHour
-                    val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
-                    val timeInt: Float = 0.5F
-                    var start: Float = (startHour + startMin).toFloat()
-                    val end: Float = endHour + endMin
-                    val viewnum: Int = 2 * (end - start).toInt()
-                    var t: Int = 0 //listofDay 인덱스 변수
-                    while (start < end) {
-
-
-
-                        t = dayInt + (7 * 2 * start).toInt()
-                        //dayModel = DayScheduleModel()
-                        listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
-                        start = (start + timeInt)
-
-                    }
-
                 }
+
+                request_button.setOnClickListener {
+                    for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                        for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
+                            for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
+                                if (snapShotTime.child("RequestList").child("Jini").getValue() == "Checked" ) {
+                                    database
+                                        .child(selectedstore)
+                                        .child("WorkingPart")
+                                        .child(snapShotDays.key.toString())
+                                        .child(snapShotWorkingParts.key.toString())
+                                        .child(snapShotTime.key.toString())
+                                        .child("RequestList")
+                                        .child("Jini")
+                                        .setValue("Request")
+                                    //체크된 스케줄 버튼 클릭시 request
+                                }
+                                if (snapShotTime.child("RequestList").child("Jini").getValue() == "Request")  {
+                                    for (jobTimeForReading in timeList) {
+                                        val jobTimeInfo: JobTimeInfo? =
+                                            snapShotTime.getValue(JobTimeInfo::class.java)
+                                        val day = snapShotDays.key
+                                        val position = snapShotWorkingParts.key
+                                        val part = snapShotTime.key
+
+                                        if (jobTimeInfo == null || day == null || position == null || part == null) {
+
+                                        }
+                                        else {
+                                            val jobTimeForReading = JobTimeForReading(
+                                                jobTimeInfo.startHour,
+                                                jobTimeInfo.startMin,
+                                                jobTimeInfo.endHour,
+                                                jobTimeInfo.endMin,
+                                                jobTimeInfo.requirePeopleNum,
+                                                name,
+                                                position,
+                                                part,
+                                                day
+                                            )
+                                            //jobtimeforreading 객체들이 들어있는 jobtimes에서 하나씩 읽기
+                                            var dayInt = 0
+                                            when (day) {
+                                                "월" -> dayInt = 0
+                                                "화" -> dayInt = 1
+                                                "수" -> dayInt = 2
+                                                "목" -> dayInt = 3
+                                                "금" -> dayInt = 4
+                                                "토" -> dayInt = 5
+                                                "일" -> dayInt = 6
+                                            }
+
+                                            val positionName: String = jobTimeForReading.positionName
+                                            val partName: String = jobTimeForReading.partName
+                                            val startHour = jobTimeForReading.startHour
+                                            val startMin = (((jobTimeForReading.startMin)/60)*0.1).toFloat()
+                                            val endHour = jobTimeForReading.endHour
+                                            val endMin = (((jobTimeForReading.endMin)/60)*0.1).toFloat()
+                                            val timeInt: Float = 0.5F
+                                            var start: Float = (startHour + startMin).toFloat()
+                                            val end: Float = endHour + endMin
+                                            val viewnum: Int = 2 * (end - start).toInt()
+                                            var t: Int = 0 //listofDay 인덱스 변수
+                                            while (start < end) {
+                                                t = dayInt + (7 * 2 * start).toInt()
+                                                //dayModel = DayScheduleModel()
+                                                listOfDay[t] = DayScheduleModel(positionName, partName, Color.rgb(240, 0, 0))
+                                                start = (start + timeInt)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
                 day_sche_calendar.apply{
                     val dayListAdapter = DayListAdapter()
                     day_sche_calendar.adapter = dayListAdapter
@@ -152,13 +257,6 @@ class WorkingScheduleActivity : AppCompatActivity() {
             }
         }
         dirFire.addValueEventListener(postListener)
-
-
-
-
-
-
-
 
 
     }
