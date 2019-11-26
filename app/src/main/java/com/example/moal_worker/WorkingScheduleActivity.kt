@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_working_schedule.*
 import kotlinx.android.synthetic.main.day_calendar.day_sche_calendar
@@ -23,6 +24,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
     var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     val dirFire: DatabaseReference = rootRef
     val database = FirebaseDatabase.getInstance().reference
+    val user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +106,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                         for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
-                            if (snapShotTime.child("RequestList").child("Jini").getValue() == "Request") {
+                            if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                                 for (jobTimeForReading in timeList) {
                                     val jobTimeInfo: JobTimeInfo? =
                                         snapShotTime.getValue(JobTimeInfo::class.java)
@@ -168,7 +170,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     for (snapShotDays: DataSnapshot in p0.child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                         for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                             for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
-                                if (snapShotTime.child("RequestList").child("Jini").getValue() == "Checked") {
+                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Checked") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                                     database
                                         .child(selectedstore)
                                         .child("WorkingPart")
@@ -176,12 +178,12 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         .child(snapShotWorkingParts.key.toString())
                                         .child(snapShotTime.key.toString())
                                         .child("RequestList")
-                                        .child("Jini")
+                                        .child(user!!.displayName.toString())
                                         .setValue("Request")
                                     //체크된 스케줄 버튼 클릭시 request
 
                                 }
-                                if (snapShotTime.child("RequestList").child("Jini").getValue() == "Request") {
+                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                                     for (jobTimeForReading in timeList) {
                                         val jobTimeInfo: JobTimeInfo? =
                                             snapShotTime.getValue(JobTimeInfo::class.java)

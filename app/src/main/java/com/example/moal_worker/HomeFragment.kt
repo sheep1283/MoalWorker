@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.day_calendar.*
 
@@ -55,12 +56,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         super.onViewCreated(v, savedInstanceState)
 
-
-
-
-
-
-
+        val user = FirebaseAuth.getInstance().currentUser
         var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
         val dirFire: DatabaseReference = rootRef.child("노랑통닭 홍대점")
 
@@ -80,7 +76,7 @@ class HomeFragment : Fragment() {
                 for (snapShotDays: DataSnapshot in p0.children){ //요일
                     for(snapShotWorkingParts : DataSnapshot in snapShotDays.children){ //서빙
                         for(snapShotTime: DataSnapshot in snapShotWorkingParts.children){
-                            if (snapShotTime.child("RequestList").child("Jini").getValue() == "Request"){
+                            if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request"){ //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                                 val day = snapShotDays.key
                                 val position = snapShotWorkingParts.key
                                 val part = snapShotTime.key

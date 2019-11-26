@@ -17,9 +17,10 @@ class RegisterActivity : AppCompatActivity() {
         registerbutton.setOnClickListener {
             val emailIs = email_register.text.toString()
             val passwordIs = password_register.text.toString()
+            val name = name.text.toString()
             //email은 이메일 형식으로, password는 길이 6 이상으로. 아니면 failure됨.
-            if (emailIs.isEmpty() || passwordIs.isEmpty()){
-                Toast.makeText(this, "이메일과 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+            if (emailIs.isEmpty() || passwordIs.isEmpty() || name.isEmpty()){
+                Toast.makeText(this, "이메일, 비밀번호, 이름을 입력하세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -28,7 +29,6 @@ class RegisterActivity : AppCompatActivity() {
                     if(!it.isSuccessful) return@addOnCompleteListener
                     else{
                         val uid = FirebaseAuth.getInstance().uid ?:""
-                        val name = name.text.toString()
                         val ref = FirebaseDatabase.getInstance().reference.child("users").child("/workers/$uid")
                         val setdisplayname = FirebaseAuth.getInstance()
                         val profileUpdate = UserProfileChangeRequest.Builder()

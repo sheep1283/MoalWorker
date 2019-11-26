@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -38,6 +39,8 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
         val database = FirebaseDatabase.getInstance().reference
         var myRef : DatabaseReference = FirebaseDatabase.getInstance().getReference()
         val dirFire : DatabaseReference = myRef.child("users")
+        val user = FirebaseAuth.getInstance().currentUser
+
 
         fun bind(data: JobTimeForReading) {
             itemView.cardView_startTime.text =
@@ -57,7 +60,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
                             .child(data.positionName)
                             .child(data.partName)
                             .child("RequestList")
-                            .child("Jini")
+                            .child(user!!.displayName.toString()) //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                             .setValue("Checked")
 
                     }
@@ -71,7 +74,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
                             .child(data.positionName)
                             .child(data.partName)
                             .child("RequestList")
-                            .child("Jini")
+                            .child(user!!.displayName.toString()) //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                             .removeValue()
 
     }
