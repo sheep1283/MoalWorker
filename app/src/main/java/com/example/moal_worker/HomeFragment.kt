@@ -267,7 +267,7 @@ class HomeFragment : Fragment() {
         var timeModel: TimeIntervalModel
 
         while (i < 24) {
-            timeModel = TimeIntervalModel(i, "시")
+            timeModel = TimeIntervalModel(i)
             listOfTime.add(timeModel)
             i++
         }//0시~ 24시
