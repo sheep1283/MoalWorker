@@ -5,13 +5,13 @@
     android:id="@+id/store_list_cardview"
     style="@style/Widget.MaterialComponents.CardView"
     android:layout_width="150dp"
-    android:layout_height="40sp"
+    android:layout_height="25sp"
     android:layout_marginLeft="5dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="2dp"
     android:layout_marginRight="5dp"
     android:layout_marginBottom="5dp"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="4dp"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="6dp"
     card_view:cardUseCompatPadding="false">
 
     <TextView
@@ -20,8 +20,10 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:text="일자리이름"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/colorAccent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/StoreLayout"

@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.part_time_cardview.view.*
 
 class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeCardAdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(inflater, parent)
@@ -37,13 +36,10 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
     class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.part_time_cardview, parent, false)) {
         val database = FirebaseDatabase.getInstance().reference
-        val checkbox = itemView.cardView_checkBox
-
-
-
+        var myRef : DatabaseReference = FirebaseDatabase.getInstance().getReference()
+        val dirFire : DatabaseReference = myRef.child("users")
 
         fun bind(data: JobTimeForReading) {
-
             itemView.cardView_startTime.text =
                 data.startHour.toString() + " : " + data.startMin.toString()
             itemView.cardView_endTime.text =
@@ -78,7 +74,7 @@ class TimeCardAdapter(val timeList:ArrayList<JobTimeForReading>):RecyclerView.Ad
                             .child("Jini")
                             .removeValue()
 
-                    }
+    }
 
 
                 }
