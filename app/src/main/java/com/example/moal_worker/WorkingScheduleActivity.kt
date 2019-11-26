@@ -342,7 +342,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
         var timeModel: TimeIntervalModel
 
         while (i < 24) {
-            timeModel = TimeIntervalModel(i, "시")
+            timeModel = TimeIntervalModel(i)
             listOfTime.add(timeModel)
             i++
         }
