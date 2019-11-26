@@ -1,9 +1,11 @@
 package com.example.moal_worker
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class CalenderActivity : AppCompatActivity(){
     lateinit var homeFragment: HomeFragment
@@ -16,6 +18,9 @@ class CalenderActivity : AppCompatActivity(){
         setContentView(R.layout.calender_activity)
 
         val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_nav)
+        val user = FirebaseAuth.getInstance().currentUser
+        Toast.makeText(this, user!!.displayName.toString(), Toast.LENGTH_LONG).show()
+
 
         homeFragment = HomeFragment()
         supportFragmentManager

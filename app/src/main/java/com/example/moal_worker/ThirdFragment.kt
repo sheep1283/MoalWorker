@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_third.*
 
 /**
  * A simple [Fragment] subclass.
@@ -17,7 +18,23 @@ class ThirdFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_third, container, false)
+        val v = inflater.inflate(R.layout.fragment_third, container, false)
+        var nameForSearch = ""
+        btn_store_search.setOnClickListener{
+            nameForSearch = store_name.text.toString()
+
+        }
+
+        btn_registration.setOnClickListener {
+            if (nameForSearch != null){
+
+            }
+            else{
+
+            }
+        }
+
+        return v
     }
 
 }
