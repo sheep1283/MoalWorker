@@ -202,6 +202,11 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
 
                                     }
+                                    day_sche_calendar.apply {
+                                        val dayListAdapter = DayListAdapter()
+                                        day_sche_calendar.adapter = dayListAdapter
+                                        dayListAdapter.setDayList(listOfDay)
+                                    }
                                 }
                             }
                         }
