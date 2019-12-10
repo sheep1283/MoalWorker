@@ -3,8 +3,7 @@ package com.example.moal_worker
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.day_calendar.*
-import kotlinx.android.synthetic.main.item_day.*
+
 
 class DayListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var listOfDayList = arrayListOf<DayScheduleModel>()
