@@ -38,7 +38,6 @@ class StoreCardAdapter(val storeList:ArrayList<JobInfoForReading>): RecyclerView
 
         fun bind(data: JobInfoForReading) {
 
-
             itemView.cardview_storename.text = data.storeName
 
             itemView.StoreLayout.setOnClickListener {

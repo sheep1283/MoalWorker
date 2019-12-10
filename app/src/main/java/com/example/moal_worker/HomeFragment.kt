@@ -78,7 +78,6 @@ class HomeFragment : Fragment() {
         var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
         val dirFire: DatabaseReference = rootRef.child("stores").child("노랑통닭 홍대점")
 
-
         initView(v)
         val postListener= object: ValueEventListener {
 
@@ -91,29 +90,32 @@ class HomeFragment : Fragment() {
 
             override fun onDataChange(p0: DataSnapshot) {
                 timeList.clear()
-                for (snapShotDays: DataSnapshot in p0.child("stores").child("노랑통닭 홍대점").children){ //요일
-                    for(snapShotWorkingParts : DataSnapshot in snapShotDays.children){ //서빙
-                        for(snapShotTime: DataSnapshot in snapShotWorkingParts.children){
-                            if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request"){ //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
-                                val day = snapShotDays.key
-                                val position = snapShotWorkingParts.key
-                                val part = snapShotTime.key
-                                val jobTimeInfo: JobTimeInfo? = snapShotTime.getValue(JobTimeInfo::class.java)
+                for (snapShotStore : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children){
+                    for (snapShotDays: DataSnapshot in p0.child("stores").child(snapShotStore.key.toString()).children){ //요일
+                        for(snapShotWorkingParts : DataSnapshot in snapShotDays.children){ //서빙
+                            for(snapShotTime: DataSnapshot in snapShotWorkingParts.children){
+                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request"){ //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
+                                    val day = snapShotDays.key
+                                    val position = snapShotWorkingParts.key
+                                    val part = snapShotTime.key
+                                    val jobTimeInfo: JobTimeInfo? = snapShotTime.getValue(JobTimeInfo::class.java)
 
-                                if (jobTimeInfo == null || day == null || position == null || part == null){
+                                    if (jobTimeInfo == null || day == null || position == null || part == null){
 
-                                }else{
+                                    }else{
 
 
-                                    val jobTimeForReading = JobTimeForReading(jobTimeInfo.startHour,jobTimeInfo.startMin,jobTimeInfo.endHour,jobTimeInfo.endMin,
-                                        jobTimeInfo.requirePeopleNum,null, position,part,day)
-                                    timeList.add(jobTimeForReading)
+                                        val jobTimeForReading = JobTimeForReading(jobTimeInfo.startHour,jobTimeInfo.startMin,jobTimeInfo.endHour,jobTimeInfo.endMin,
+                                            jobTimeInfo.requirePeopleNum,null, position,part,day)
+                                        timeList.add(jobTimeForReading)
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
+
                 /* time_list.apply {
                      layoutManager = LinearLayoutManager(context)
                      adapter = TimeCardAdapter(timeList, listOfDay)
@@ -207,7 +209,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        dirFire.child("WorkingPart").addValueEventListener(postListener)
+        dirFire.addValueEventListener(postListener)
 
         var jobTimes = timeList
         var timeIntList: ArrayList<Int> = arrayListOf()

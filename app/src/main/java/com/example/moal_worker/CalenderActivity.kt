@@ -18,8 +18,6 @@ class CalenderActivity : AppCompatActivity(){
         setContentView(R.layout.calender_activity)
 
         val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_nav)
-        val user = FirebaseAuth.getInstance().currentUser
-        Toast.makeText(this, user!!.displayName.toString(), Toast.LENGTH_LONG).show()
 
 
         homeFragment = HomeFragment()
