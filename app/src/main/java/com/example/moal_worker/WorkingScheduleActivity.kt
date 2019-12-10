@@ -48,7 +48,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
         initView()//빈 calendar xml
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
         var timeList = arrayListOf<JobTimeForReading>()
-        var storeList = arrayListOf<JobInfoForReading>()
+        var storeList = arrayListOf<JobInfoForReading>() //DB에서 가게 목록 읽어서 StoreCardView로 보냄
 
         val postListener = object : ValueEventListener {
 
@@ -58,15 +58,69 @@ class WorkingScheduleActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                if (intent.hasExtra("clickedstore")) {
+                if (intent.hasExtra("clickedstore")) { //사용자가 누른 값이 있으면
                     selectedstore = intent.getStringExtra("clickedstore")
-                } else {
-                    selectedstore = "노랑통닭 홍대점"
+                } else { //시작시 자동으로 읽어올 가게
+                    for (snapShotStores: DataSnapshot in p0.child("users").child("workers").child(
+                        user!!.uid
+                    ).child("RegisteredStore").children) { //user개인정보에 다른 프래그먼트에서 이미 등록한 RegisteredStore
+                        if (snapShotStores.key == null) { //DB에 등록된 가게가 없으면 아무것도 읽어오지 않음.
+
+                        } else {
+                            selectedstore = snapShotStores.key.toString() //DB에서 아무 가게나 일단 읽어오
+                        }
+                    }
+                }
+                var i: Int = 0
+                fun writeDatabase() { //내가 신청한 요일, 파트 등의 정보를 읽어와 캘린더에 띄워주는 함수. datasnapshot을 이용하기 때문에 onCreate 바깥이 아닌 onDataChange 내부에 선언했음
+                    for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child(
+                        "WorkingPart"
+                    ).children) { //요일 // intent에서  null처리 했기때문에 selectedstore는 non-null
+                        for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙, 주방 등등
+                            for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오픈, 미들, 마감 등등
+                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
+                                    for (jobTimeForReading in timeList) { //timeList에 저장 된 값들 읽기. 값의 형식은 JobTimeForReading
+                                        val jobTimeInfo: JobTimeInfo? =
+                                            snapShotTime.getValue(JobTimeInfo::class.java)
+                                        val day = snapShotDays.key
+                                        val position = snapShotWorkingParts.key
+                                        val part = snapShotTime.key
+
+                                        if (jobTimeInfo == null || day == null || position == null || part == null) { //점주 앱에서 네개의 값이 null이 되면 받지 않게 처리됨
+
+                                        } else {
+                                            val jobTimeForReading = JobTimeForReading(
+                                                jobTimeInfo.startHour,
+                                                jobTimeInfo.startMin,
+                                                jobTimeInfo.endHour,
+                                                jobTimeInfo.endMin,
+                                                jobTimeInfo.requirePeopleNum,
+                                                selectedstore,
+                                                position,
+                                                part,
+                                                day
+                                            )
+                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
+
+                                            if (i == 9) {
+                                                i = 0
+                                            } else {
+                                                i++
+                                            }
+
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
-                storeList.clear()
+                storeList.clear() //직전 실행 값이 남아있을 수 있으므로 초기화
 
-                for (snapShotStore: DataSnapshot in p0.child("stores").children) {
+                for (snapShotStore: DataSnapshot in p0.child("users").child("workers")
+                    .child(user!!.uid).child("RegisteredStore").children) { //user개인정보에 다른 프래그먼트에서 이미 등록한 RegisteredStore
                     val storename = snapShotStore.key
                     if (storename == null) {
 
@@ -75,12 +129,14 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         storeList.add(jobInfoForReading)
                     }
                 }
-                store_list.apply {
+                store_list.apply { //cardView로 띄워지게 해당 adapter에 읽은 값 전달
                     layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                     adapter = StoreCardAdapter(storeList)
                 }
-                timeList.clear()
+
+                timeList.clear() //직전 실행 값이 남아있을 수 있으므로 초기화
+
                 val name = selectedstore
                 for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
@@ -111,57 +167,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         }
                     }
                 }
-                var i: Int = 0
-                //이미 request된 스케줄 읽어오기. 일단 노랑통닭 홍대점만 읽지만, 등록된 스토어 전부 읽어야 함
-                for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
-                    for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
-                        for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
-                            if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
-                                for (jobTimeForReading in timeList) {
-                                    val jobTimeInfo: JobTimeInfo? =
-                                        snapShotTime.getValue(JobTimeInfo::class.java)
-                                    val day = snapShotDays.key
-                                    val position = snapShotWorkingParts.key
-                                    val part = snapShotTime.key
+                writeDatabase()//이미 request된 스케줄 읽어오기. 일단 노랑통닭 홍대점만 읽지만, 등록된 스토어 전부 읽어야 함
 
-                                    if (jobTimeInfo == null || day == null || position == null || part == null) {
-
-                                    }
-                                    else {
-                                        val jobTimeForReading = JobTimeForReading(
-                                            jobTimeInfo.startHour,
-                                            jobTimeInfo.startMin,
-                                            jobTimeInfo.endHour,
-                                            jobTimeInfo.endMin,
-                                            jobTimeInfo.requirePeopleNum,
-                                            name,
-                                            position,
-                                            part,
-                                            day
-                                        )
-                                        dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
-                                        //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
-
-
-                                        if (i == 9) {
-                                            i = 0
-                                        } else {
-                                            i++
-                                        }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
-                                        //0번째 인덱스로 다시 복귀
-
-
-                                    }
-                                    day_sche_calendar.apply {
-
-                                        day_sche_calendar.adapter = dayListAdapter
-                                        dayListAdapter.setDayList(listOfDay)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
 
                 request_button.setOnClickListener {
                     for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -181,52 +188,21 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                     //체크된 스케줄 버튼 클릭시 request
 
                                 }
-                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
-                                    for (jobTimeForReading in timeList) {
-                                        val jobTimeInfo: JobTimeInfo? =
-                                            snapShotTime.getValue(JobTimeInfo::class.java)
-                                        val day = snapShotDays.key
-                                        val position = snapShotWorkingParts.key
-                                        val part = snapShotTime.key
 
-                                        if (jobTimeInfo == null || day == null || position == null || part == null) {
-
-                                        } else {
-                                            val jobTimeForReading = JobTimeForReading(
-                                                jobTimeInfo.startHour,
-                                                jobTimeInfo.startMin,
-                                                jobTimeInfo.endHour,
-                                                jobTimeInfo.endMin,
-                                                jobTimeInfo.requirePeopleNum,
-                                                name,
-                                                position,
-                                                part,
-                                                day
-                                            )
-                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
-                                            //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
-
-
-                                            if (i == 9) {
-                                                i = 0
-                                            } else {
-                                                i++
-                                            }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
-                                            //0번째 인덱스로 다시 복귀
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
+                    writeDatabase()
                 }
+
+
                 day_sche_calendar.apply {
 
                     day_sche_calendar.adapter = dayListAdapter
                     dayListAdapter.setDayList(listOfDay)
                 }
                 time_list.apply {
-                    layoutManager = LinearLayoutManager(context)
+                    layoutManager = LinearLayoutManager(context) //cardView로 띄워지게 해당 adapter에 읽은 값 전달
                     adapter = TimeCardAdapter(timeList)
                     // jobTimes =timecardAdapter.copy()
 
