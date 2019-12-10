@@ -16,8 +16,9 @@ class DayListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         // }
 
-        if (dayModel.fill != null ) {
+        if (dayModel.fill != null ) {//내용(part이름, 오픈 미들 마감)이 들어올때
             itemView.gridName.text = dayModel.fill
+            //xml의 원하는 공간에 해당 내용을 넣는다
             itemView.gridName.setTextColor(Color.rgb(117, 117, 117))
             itemView.gridName.setTextSize(13F)
         }
@@ -25,14 +26,11 @@ class DayListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             itemView.gridName.text = dayModel.Name
             itemView.gridName.setTextColor(Color.BLACK)
             itemView.gridName.setTextSize(13F)
-        }
+        }//제목(position이름, 서빙 주방)이 들어올때
         //itemView.gridName.text
         //itemView.gridfill.text=dayModel.fill
         itemView.setBackgroundColor(dayModel.color)
 
-       /* itemView.Layout.setOnClickListener {
-
-        }*/
     }
 
 }

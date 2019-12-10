@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+    //????????????????
 
     var data = listOf<String>()
 
