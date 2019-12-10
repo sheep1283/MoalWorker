@@ -21,8 +21,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
     val requestclicked  = 1
     var selectedstore = ""
-    var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    val dirFire: DatabaseReference = rootRef
+    var dirFire: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     val database = FirebaseDatabase.getInstance().reference
     val user = FirebaseAuth.getInstance().currentUser
 
@@ -49,6 +48,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
         var timeList = arrayListOf<JobTimeForReading>()
         var storeList = arrayListOf<JobInfoForReading>() //DB에서 가게 목록 읽어서 StoreCardView로 보냄
+        var timeListToSend = arrayListOf<JobTimeForReading>()
 
         val postListener = object : ValueEventListener {
 
@@ -135,7 +135,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     adapter = StoreCardAdapter(storeList)
                 }
 
-                timeList.clear() //직전 실행 값이 남아있을 수 있으므로 초기화
+                timeList.clear()
+                timeListToSend.clear()//직전 실행 값이 남아있을 수 있으므로 초기화
 
                 val name = selectedstore
                 for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -164,6 +165,31 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                 )
                                 timeList.add(jobTimeForReading)
                             }
+                            if(snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() != "Request"){
+                                val day = snapShotDays.key
+                                val position = snapShotWorkingParts.key
+                                val part = snapShotTime.key
+                                val jobTimeInfo: JobTimeInfo? =
+                                    snapShotTime.getValue(JobTimeInfo::class.java)
+
+                                if (jobTimeInfo == null || day == null || position == null || part == null) {
+
+                                } else {
+                                    val jobTimeForReading = JobTimeForReading(
+                                        jobTimeInfo.startHour,
+                                        jobTimeInfo.startMin,
+                                        jobTimeInfo.endHour,
+                                        jobTimeInfo.endMin,
+                                        jobTimeInfo.requirePeopleNum,
+                                        name,
+                                        position,
+                                        part,
+                                        day
+
+                                    )
+                                    timeListToSend.add(jobTimeForReading)
+                                }
+                            }
                         }
                     }
                 }
@@ -175,7 +201,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                         for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                             for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
                                 if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Checked") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
-                                    database
+                                    database //체크된 스케줄 버튼 클릭시 request
                                         .child("stores")
                                         .child(selectedstore)
                                         .child("WorkingPart")
@@ -185,7 +211,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         .child("RequestList")
                                         .child(user!!.displayName.toString())
                                         .setValue("Request")
-                                    //체크된 스케줄 버튼 클릭시 request
+
 
                                 }
 
@@ -203,7 +229,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 }
                 time_list.apply {
                     layoutManager = LinearLayoutManager(context) //cardView로 띄워지게 해당 adapter에 읽은 값 전달
-                    adapter = TimeCardAdapter(timeList)
+                    adapter = TimeCardAdapter(timeListToSend)
                     // jobTimes =timecardAdapter.copy()
 
                 }

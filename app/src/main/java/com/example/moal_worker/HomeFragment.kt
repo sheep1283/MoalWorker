@@ -74,13 +74,12 @@ class HomeFragment : Fragment()
         colors.add(Color.rgb(211, 181, 228))//c8
         colors.add(Color.rgb(172, 165, 165))//c9
 
-//
+
 //        var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
 //        val dirFire: DatabaseReference = rootRef.child("stores").child("노랑통닭 홍대점")
 
         var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
         val dirFire: DatabaseReference = rootRef
-        val database = FirebaseDatabase.getInstance().reference
         val user = FirebaseAuth.getInstance().currentUser
 
         initView(v)  //빈 calendar xml
@@ -180,16 +179,8 @@ class HomeFragment : Fragment()
 
                     }
                 }
-
-
-
-
-
-
             }
-
         }
-
         dirFire.addValueEventListener(postListener)
     }
 
@@ -201,40 +192,11 @@ class HomeFragment : Fragment()
         time_sche_calendar.layoutManager = GridLayoutManager(activity, 1)
         //RecyclerView가 고정된 사이즈로 1개 항목을 한 줄에 나타나게 한다.
         time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
-        /*time_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                LinearLayoutManager.HORIZONTAL
-            )
-        )*/
-        /*time_sche_calendar.addItemDecoration(
-                DividerItemDecoration(
-                    activity,
-                    LinearLayoutManager.VERTICAL
-                )
-            )
-            구분선 넣는 코드
-            */
-
-
         //day RecyclerView
         day_sche_calendar.layoutManager = GridLayoutManager(activity, 7)
         //RecyclerView가 고정된 사이즈로 7개 항목을 한 줄에 나타나게 한다.
-
         day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))//여백 0,
-        /*day_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-            activity,
-            LinearLayoutManager.HORIZONTAL
-        ))*/
 
-        /*day_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                LinearLayoutManager.VERTICAL
-            )
-        )
-*/
 
         val timeListAdapter = TimeIntervalAdapter()
         time_sche_calendar.adapter = timeListAdapter
@@ -269,8 +231,6 @@ class HomeFragment : Fragment()
         }//timecal에 스크롤 제거 후, scrollListner2를 적용
         timecal.addOnScrollListener(scrollListener1)
         daycal.addOnScrollListener(scrollListener2)
-
-
     }
 
     private fun timeSettingData(): ArrayList<TimeIntervalModel> {
@@ -284,7 +244,6 @@ class HomeFragment : Fragment()
             listOfTime.add(timeModel)
             i++
         }//0시~ 23시 내용을 TimeIntervaModel class에 하나씩 넣고 이 각 class들을 listofTime배열에 넣는다
-
         return listOfTime
     }
 
@@ -299,9 +258,6 @@ class HomeFragment : Fragment()
             listOfDay.add(dayModel)
             i++
         }
-
-
         return listOfDay
     } // 빈 내용을  DayScheduleModel class에 하나씩 넣고 이 각 class들을 listofDay 배열에 넣는다
-
 }

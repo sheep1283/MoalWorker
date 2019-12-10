@@ -56,12 +56,10 @@ class RegisterActivity : AppCompatActivity() {
                         val uid = FirebaseAuth.getInstance().uid ?: ""
                         val ref = FirebaseDatabase.getInstance().reference.child("users")
                             .child("/workers/$uid")
-                        val setdisplayname = FirebaseAuth.getInstance()
                         val profileUpdate = UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build()
                         val userupdate = FirebaseAuth.getInstance().currentUser
-                        val registedStore = FirebaseDatabase.getInstance().reference
                         val user = UserRegister(uid, name)
 
                         ref.setValue(user)
