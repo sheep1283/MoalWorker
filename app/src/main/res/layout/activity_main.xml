@@ -15,6 +15,7 @@
         android:ems="10"
         android:hint="아이디"
         android:inputType="textPersonName"
+        android:text="test0@gmail.com"
         android:textColor="#EDF0F2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,6 +31,7 @@
         android:ems="10"
         android:hint="비밀번호"
         android:inputType="textPersonName"
+        android:text="123123"
         android:textColor="#EDF2F0"
         app:layout_constraintStart_toStartOf="@+id/id_text"
         app:layout_constraintTop_toBottomOf="@+id/id_text" />

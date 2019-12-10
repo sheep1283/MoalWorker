@@ -30,13 +30,14 @@ class WorkingScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
         val colors = ArrayList<Int>()
+        val dayListAdapter = DayListAdapter()
+        day_sche_calendar.adapter = dayListAdapter
 
         colors.add(Color.rgb(250, 190, 190))//c1
         colors.add(Color.rgb(248, 237, 170))//c2
         colors.add(Color.rgb(162, 194, 106))//c3
         colors.add(Color.rgb(166, 235, 142))//c4
         colors.add(Color.rgb(125, 211, 240))//하늜색
-        //colors.add(Color.rgb(99, 135, 245))
         colors.add(Color.rgb(173, 211, 255))//c5
         colors.add(Color.rgb(106, 196, 185))//c9
         colors.add(Color.rgb(215, 190, 252))//c7
@@ -44,16 +45,12 @@ class WorkingScheduleActivity : AppCompatActivity() {
         colors.add(Color.rgb(172, 165, 165))//c9
 
 
-        initView()
+        initView()//빈 calendar xml
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
         var timeList = arrayListOf<JobTimeForReading>()
-        var jobTimes = arrayListOf<JobTimeForReading>()
-        val timecardAdapter = TimeCardAdapter(timeList)
         var storeList = arrayListOf<JobInfoForReading>()
 
         val postListener = object : ValueEventListener {
-
-            val dayListAdapter = DayListAdapter()
 
 
             override fun onCancelled(p0: DatabaseError) {
@@ -142,68 +139,21 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                             part,
                                             day
                                         )
-                                        var dayInt = 0
-                                        when (day) {
-                                            "월" -> dayInt = 0
-                                            "화" -> dayInt = 1
-                                            "수" -> dayInt = 2
-                                            "목" -> dayInt = 3
-                                            "금" -> dayInt = 4
-                                            "토" -> dayInt = 5
-                                            "일" -> dayInt = 6
-                                        }
-                                        val positionName: String = jobTimeForReading.positionName
-                                        val partName: String = jobTimeForReading.partName
-                                        val startHour = jobTimeForReading.startHour
-                                        val startMin =
-                                            (((jobTimeForReading.startMin) / 6) * 0.1).toFloat()
-                                        val endHour = jobTimeForReading.endHour
-                                        val endMin = (((jobTimeForReading.endMin) / 6) * 0.1).toFloat()
-                                        val timeInt: Float = 0.5F
-                                        var start: Float = (startHour + startMin).toFloat()
-                                        var st: Float = start
-                                        val end: Float = endHour + endMin
-                                        val viewnum: Int = 2 * (end - start).toInt()
-                                        var t: Int = 0 //listofDay 인덱스 변수
-                                        while (start < end) {
+                                        dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
+                                        //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
 
-                                            t = dayInt + (7 * 2 * start).toInt()
-                                            //dayModel = DayScheduleModel()
-                                            var se = st + end
-                                            var ts = start * 2
-                                            if (startMin != endMin) {
-                                                if (ts == (se - 1.5F)) {
-                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
-                                                } else if (ts == se - 0.5F) {
-                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
-                                                } else {
-                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
-                                                }
-                                            }
-                                            if (startMin == endMin) {
-                                                if ((start * 2) == (st + end - 1)) {
-                                                    listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
-                                                } else if ((start * 2) == st + end) {
-                                                    listOfDay[t] = DayScheduleModel(null, partName, colors[i])
-                                                } else {
-                                                    listOfDay[t] = DayScheduleModel(null, null, colors[i])
-                                                }
-
-                                            }
-
-                                            start = (start + timeInt)
-                                        }
 
                                         if (i == 9) {
                                             i = 0
                                         } else {
                                             i++
-                                        }
+                                        }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
+                                        //0번째 인덱스로 다시 복귀
 
 
                                     }
                                     day_sche_calendar.apply {
-                                        val dayListAdapter = DayListAdapter()
+
                                         day_sche_calendar.adapter = dayListAdapter
                                         dayListAdapter.setDayList(listOfDay)
                                     }
@@ -253,67 +203,16 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                                 part,
                                                 day
                                             )
-                                            var dayInt = 0
-                                            when (day) {
-                                                "월" -> dayInt = 0
-                                                "화" -> dayInt = 1
-                                                "수" -> dayInt = 2
-                                                "목" -> dayInt = 3
-                                                "금" -> dayInt = 4
-                                                "토" -> dayInt = 5
-                                                "일" -> dayInt = 6
-                                            }
-                                            val positionName: String =
-                                                jobTimeForReading.positionName
-                                            val partName: String = jobTimeForReading.partName
-                                            val startHour = jobTimeForReading.startHour
-                                            val startMin =
-                                                (((jobTimeForReading.startMin) / 6) * 0.1).toFloat()
-                                            val endHour = jobTimeForReading.endHour
-                                            val endMin =
-                                                (((jobTimeForReading.endMin) / 6) * 0.1).toFloat()
-                                            val timeInt: Float = 0.5F
-                                            var start: Float = (startHour + startMin).toFloat()
-                                            var st: Float = start
-                                            val end: Float = endHour + endMin
-                                            val viewnum: Int = 2 * (end - start).toInt()
-                                            var t: Int = 0 //listofDay 인덱스 변수
-                                            while (start < end) {
+                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
+                                            //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
 
-                                                t = dayInt + (7 * 2 * start).toInt()
-                                                //dayModel = DayScheduleModel()
-                                                var se = st + end
-                                                var ts = start * 2
-                                                if (startMin != endMin) {
-                                                    if (ts == (se - 1.5F)) {
-                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
-                                                    } else if (ts == se - 0.5F) {
-                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
-                                                    } else {
-                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
-                                                    }
-                                                }
-                                                if (startMin == endMin) {
-                                                    if ((start * 2) == (st + end - 1)) {
-                                                        listOfDay[t] = DayScheduleModel(positionName, null, colors[i])
-                                                    } else if ((start * 2) == st + end) {
-                                                        listOfDay[t] = DayScheduleModel(null, partName, colors[i])
-                                                    } else {
-                                                        listOfDay[t] = DayScheduleModel(null, null, colors[i])
-                                                    }
-
-                                                }
-
-                                                start = (start + timeInt)
-                                            }
 
                                             if (i == 9) {
                                                 i = 0
                                             } else {
                                                 i++
-                                            }
-
-
+                                            }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
+                                            //0번째 인덱스로 다시 복귀
                                         }
                                     }
                                 }
@@ -322,7 +221,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     }
                 }
                 day_sche_calendar.apply {
-                    val dayListAdapter = DayListAdapter()
+
                     day_sche_calendar.adapter = dayListAdapter
                     dayListAdapter.setDayList(listOfDay)
                 }
@@ -343,10 +242,14 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
 
 
-    fun initView() {
+    private fun initView() {
 
 
+// view를 사용할 일이 있을때 인자로 넘겨줘야한다.
+
+        //time RecyclerView
         time_sche_calendar.layoutManager = GridLayoutManager(this, 1)
+        //RecyclerView가 고정된 사이즈로 1개 항목을 한 줄에 나타나게 한다.
         time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
         /*time_sche_calendar.addItemDecoration(
             DividerItemDecoration(
@@ -359,10 +262,16 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     activity,
                     LinearLayoutManager.VERTICAL
                 )
-            )*/
+            )
+            구분선 넣는 코드
+            */
 
+
+        //day RecyclerView
         day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
-        day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
+        //RecyclerView가 고정된 사이즈로 7개 항목을 한 줄에 나타나게 한다.
+
+        day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))//여백 0,
         /*day_sche_calendar.addItemDecoration(
             DividerItemDecoration(
             activity,
@@ -374,9 +283,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 activity,
                 LinearLayoutManager.VERTICAL
             )
-        )*/
-
-
+        )
+*/
 
         val timeListAdapter = TimeIntervalAdapter()
         time_sche_calendar.adapter = timeListAdapter
@@ -385,7 +293,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
         val dayListAdapter = DayListAdapter()
         day_sche_calendar.adapter = dayListAdapter
         dayListAdapter.setDayList(generateDummyData())
+        //내용물 없는 빈 칸 xml 띄우기
 
+        // 2개의 RecyclerView의 Scroll을 통일하는 코드
         val daycal: RecyclerView = findViewById(R.id.day_sche_calendar)
         val timecal: RecyclerView = findViewById(R.id.time_sche_calendar)
         val scrollListener1: RecyclerView.OnScrollListener
@@ -397,8 +307,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 daycal.scrollBy(dx, dy)
                 daycal.addOnScrollListener(scrollListener2)
             }
-        }
-
+        } //daycal에 스크롤 제거 후, scrollListner2를 적용
         scrollListener2 = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -407,7 +316,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 timecal.addOnScrollListener(scrollListener1)
 
             }
-        }
+        }//timecal에 스크롤 제거 후, scrollListner2를 적용
         timecal.addOnScrollListener(scrollListener1)
         daycal.addOnScrollListener(scrollListener2)
 
@@ -415,7 +324,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
     }
 
     private fun timeSettingData(): ArrayList<TimeIntervalModel> {
-        var i: Int = 0
+        //
+        var i = 0
         val listOfTime = ArrayList<TimeIntervalModel>()
         var timeModel: TimeIntervalModel
 
@@ -423,26 +333,27 @@ class WorkingScheduleActivity : AppCompatActivity() {
             timeModel = TimeIntervalModel(i)
             listOfTime.add(timeModel)
             i++
-        }
+        }//0시~ 23시 내용을 TimeIntervaModel class에 하나씩 넣고 이 각 class들을 listofTime배열에 넣는다
+
         return listOfTime
     }
 
     private fun generateDummyData(): ArrayList<DayScheduleModel> {
         val listOfDay = ArrayList<DayScheduleModel>()
-        var i: Int = 0
+        var i = 0
 
-//        val listOfTime =ArrayList<TimeIntervalModel>()
-//        var timeModel : TimeIntervalModel
         var dayModel: DayScheduleModel
 
         while (i < 7 * 48) {
-            dayModel = DayScheduleModel()
+            dayModel = DayScheduleModel()//모두 null
             listOfDay.add(dayModel)
             i++
         }
 
+
         return listOfDay
-    }
+    } // 빈 내용을  DayScheduleModel class에 하나씩 넣고 이 각 class들을 listofDay 배열에 넣는다
+
 
 }
 

@@ -1,12 +1,17 @@
 package com.example.moal_worker
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +29,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        try {     // 해시키 "nlZtw5R/zALjj6HQQ2UiopGbT7k="
+            val info = this.packageManager.getPackageInfo(this.packageName, PackageManager.GET_SIGNATURES)
+            for (signature in info.signatures) {
+                val md = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                val sign = Base64.encodeToString(md.digest(), Base64.DEFAULT)
+                Log.e("test", "hash key : $sign")
+                //Toast.makeText(getApplicationContext(),sign,     Toast.LENGTH_LONG).show();
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e("test", "hash key1 : $e")
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e("test", "hash key2 : $e")
+        }
 
         register.setOnClickListener {
             val registerActivityintent = Intent(this, RegisterActivity::class.java)

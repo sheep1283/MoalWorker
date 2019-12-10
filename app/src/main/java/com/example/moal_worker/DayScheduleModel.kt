@@ -3,7 +3,7 @@ package com.example.moal_worker
 import android.graphics.Color
 
 class DayScheduleModel(Name: String?=null, fill: String?=null, var color: Int =Color.argb(0,1,1,1)){
-
+//calendar에 들어가는 xml의 구성요소 내용을 담는 class
     var Name = Name
     var fill = fill
     /*
