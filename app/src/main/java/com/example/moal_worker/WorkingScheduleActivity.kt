@@ -100,12 +100,13 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                             )
                                             dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
 
-                                            if (i == 9) {
-                                                i = 0
-                                            } else {
-                                                i++
-                                            }
+
                                         }
+                                    }
+                                    if (i == 9) {
+                                        i = 0
+                                    } else {
+                                        i++
                                     }
                                 }
                             }

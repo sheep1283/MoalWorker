@@ -86,7 +86,7 @@ class HomeFragment : Fragment()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                var i: Int = 0
+
                 timeList.clear()
                 for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children) { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                     for (snapShotDays: DataSnapshot in p0.child("stores").child(snapShotStores.key.toString()).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -121,7 +121,7 @@ class HomeFragment : Fragment()
                     }
                 }
 
-
+                var i: Int = 0
                 //이미 request된 스케줄 읽어오기
                 for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user.uid).child("RegisteredStore").children){
                     selectedstore = snapShotStores.key.toString()
@@ -154,24 +154,24 @@ class HomeFragment : Fragment()
                                             //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
 
 
-                                            if (i == 9) {
-                                                i = 0
-                                            } else {
-                                                i++
-                                            }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
+                                         //한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
                                             //0번째 인덱스로 다시 복귀
 
 
                                         }
-
+                                        if(day_sche_calendar != null){ //세번째 fragment에서 등록 후 이부분 널처리 요함
                                             day_sche_calendar.adapter = dayListAdapter
-                                            dayListAdapter.setDayList(listOfDay)
+                                            dayListAdapter.setDayList(listOfDay)}
                                             /*day_sche_calendar.apply {
                                                 day_sche_calendar.adapter = dayListAdapter
                                                 dayListAdapter.setDayList(listOfDay)
                                             }*/
 
-
+                                    }
+                                    if (i == 9) {
+                                        i = 0
+                                    } else {
+                                        i++
                                     }
                                 }
                             }
@@ -179,6 +179,7 @@ class HomeFragment : Fragment()
 
                     }
                 }
+
             }
         }
         dirFire.addValueEventListener(postListener)

@@ -104,6 +104,7 @@ class DayListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
 
             start = (start + timeInt)
+
         }
 
     }
