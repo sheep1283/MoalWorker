@@ -17,9 +17,6 @@ import kotlin.collections.ArrayList
 
 
 class WorkingScheduleActivity : AppCompatActivity() {
-
-
-    val requestclicked  = 1
     var selectedstore = ""
     var dirFire: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     val database = FirebaseDatabase.getInstance().reference
@@ -245,48 +242,14 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
 
     private fun initView() {
-
-
-// view를 사용할 일이 있을때 인자로 넘겨줘야한다.
-
         //time RecyclerView
         time_sche_calendar.layoutManager = GridLayoutManager(this, 1)
         //RecyclerView가 고정된 사이즈로 1개 항목을 한 줄에 나타나게 한다.
-        time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
-        /*time_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                LinearLayoutManager.HORIZONTAL
-            )
-        )*/
-        /*time_sche_calendar.addItemDecoration(
-                DividerItemDecoration(
-                    activity,
-                    LinearLayoutManager.VERTICAL
-                )
-            )
-            구분선 넣는 코드
-            */
-
 
         //day RecyclerView
         day_sche_calendar.layoutManager = GridLayoutManager(this, 7)
         //RecyclerView가 고정된 사이즈로 7개 항목을 한 줄에 나타나게 한다.
 
-        day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))//여백 0,
-        /*day_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-            activity,
-            LinearLayoutManager.HORIZONTAL
-        ))*/
-
-        /*day_sche_calendar.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                LinearLayoutManager.VERTICAL
-            )
-        )
-*/
 
         val timeListAdapter = TimeIntervalAdapter()
         time_sche_calendar.adapter = timeListAdapter

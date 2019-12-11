@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.calender_activity.*
 
 class CalenderActivity : AppCompatActivity(){
     lateinit var homeFragment: HomeFragment
@@ -17,7 +18,9 @@ class CalenderActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.calender_activity)
 
-        val bottomnavigation : BottomNavigationView = findViewById(R.id.btm_nav)
+        val bottomnavigation : BottomNavigationView = btm_nav
+        val user = FirebaseAuth.getInstance().currentUser
+        Toast.makeText(this, user!!.displayName.toString(), Toast.LENGTH_LONG).show()
 
 
         homeFragment = HomeFragment()

@@ -1,5 +1,6 @@
 package com.example.moal_worker
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,20 +19,18 @@ import com.google.firebase.database.FirebaseDatabase
 import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
 import com.kakao.network.ErrorResult
-import com.kakao.usermgmt.StringSet.nickname
+import com.kakao.usermgmt.StringSet.*
 import com.kakao.usermgmt.UserManagement
 import com.kakao.usermgmt.callback.MeV2ResponseCallback
 import com.kakao.usermgmt.response.MeV2Response
 import com.kakao.util.exception.KakaoException
-import com.kakao.util.helper.Utility.getPackageInfo
 import com.kakao.util.helper.log.Logger
 import kotlinx.android.synthetic.main.activity_register.*
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
     private var callback: SessionCallback = SessionCallback()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,16 +89,18 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+
+
+
     }
 
-    private class SessionCallback : ISessionCallback {
+    private class SessionCallback : ISessionCallback { //private
         override fun onSessionOpenFailed(exception: KakaoException?) {
             Log.e("TAG", "Session Call back :: onSessionOpenFailed: ${exception?.message}")
         }
 
         override fun onSessionOpened() {
             UserManagement.getInstance().me(object : MeV2ResponseCallback() {
-
                 override fun onFailure(errorResult: ErrorResult?) {
                     Log.d("TAG", "Session Call back :: on failed ${errorResult?.errorMessage}")
                 }
@@ -109,15 +110,49 @@ class RegisterActivity : AppCompatActivity() {
                         "TAG",
                         "Session Call back :: onSessionClosed ${errorResult?.errorMessage}"
                     )
-
                 }
 
-                override fun onSuccess(result: MeV2Response?) {
+                override fun onSuccess(result: MeV2Response?) {//웹뷰가 켜지고 login에 성공 시 작동
                     checkNotNull(result) { "session response null" }
+                    Log.d("jooankim", "onSuccess is here")
 
-                    // register or login
+                    Log.d("kakaodebug", "userd : " + result.id)
+                    Log.d("kakaodebug", "nickname : " + result.nickname)
+                    Log.d("kakaodebug", "email: " + result.kakaoAccount.email)
+                    Log.d("kakaodebug", "birthday: " + result.kakaoAccount.birthday)
+
+                    val emailIs = result.kakaoAccount.email.toString()
+                    val passwordIs = result.id.toString()
+                    val name = result.nickname.toString()
+                    //로그인으로부터 가져온 email 등 인적 사항을 firebase로 넘기는 함수
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailIs, passwordIs)
+                        .addOnCompleteListener {
+                            if (!it.isSuccessful) return@addOnCompleteListener
+                            else {
+                                Log.d("kakaodebug", "Error while register")
+                                val uid = FirebaseAuth.getInstance().uid ?: ""
+                                val ref = FirebaseDatabase.getInstance().reference.child("users")
+                                    .child("/workers/$uid")
+                                val setdisplayname = FirebaseAuth.getInstance()
+                                val profileUpdate = UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name)
+                                    .build()
+                                val userupdate = FirebaseAuth.getInstance().currentUser
+                                val registedStore = FirebaseDatabase.getInstance().reference
+                                val user = UserRegister(uid, name)
+                                ref.setValue(user)
+                                userupdate?.updateProfile(profileUpdate)
+                            }
+                        }
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(emailIs,passwordIs).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            val intent = Intent(RegisterActivity(), CalenderActivity::class.java)
+
+                        }
+                    }
                 }
-                private fun requestMe() {
+
+                private fun requestMe() { //회원 정보를 가져오는 함수
                     val keys: MutableList<String> = ArrayList()
                     keys.add("properties.nickname")
                     keys.add("properties.profile_image")
@@ -130,76 +165,19 @@ class RegisterActivity : AppCompatActivity() {
 
                         override fun onSessionClosed(errorResult: ErrorResult) {
                             RegisterActivity()
-
-                            //CalenderActivity()
                         }
 
                         override fun onSuccess(response: MeV2Response) {
                             Logger.d("user id : " + response.id)
                             Logger.d("email: " + response.kakaoAccount.email)
 
-                            Log.d("what","userd : " + response.id)
-                            Log.d("TAG","nickname : " + response.nickname)
-                            Log.d("TAG","email: " + response.kakaoAccount.email)
-
-                            FirebaseAuth.getInstance().signInWithEmailAndPassword(response.kakaoAccount.email, response.nickname)
-                                .addOnCompleteListener {
-                                    if (it.isSuccessful){
-                                        val calActivityintent = Intent(RegisterActivity(), CalenderActivity::class.java)
-                                        startActivity(RegisterActivity(),calActivityintent , null)
-                                    }
-                                }
-
-
-                            RegisterActivity()
                         }
 
-                        /* override fun onNotSignedUp() {
-                             showSignup()
-                         }*/
-                    }
+                    })
 
-                    )
                 }
-
             })
-
         }
-
-    }
-    fun getHashKey(context: Context): String? {
-        try {
-            if (Build.VERSION.SDK_INT >= 28) {
-                val packageInfo = getPackageInfo(context, PackageManager.GET_SIGNING_CERTIFICATES)
-                val signatures = packageInfo.signingInfo.apkContentsSigners
-                val md = MessageDigest.getInstance("SHA")
-                for (signature in signatures) {
-                    md.update(signature.toByteArray())
-                    return String(Base64.encode(md.digest(), NO_WRAP))
-                }
-            } else {
-                val packageInfo =
-                    getPackageInfo(context, PackageManager.GET_SIGNATURES) ?: return null
-
-                for (signature in packageInfo!!.signatures) {
-                    try {
-                        val md = MessageDigest.getInstance("SHA")
-                        md.update(signature.toByteArray())
-                        return Base64.encodeToString(md.digest(), Base64.NO_WRAP)
-                    } catch (e: NoSuchAlgorithmException) {
-                        Log.w("TAG",
-                            "Unable to get MessageDigest. signature=$signature"
-                        )
-                    }
-                }
-            }
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }
-
-        return null
     }
 
 

@@ -52,10 +52,7 @@ class TimeCardAdapter(val timeListToSend:ArrayList<JobTimeForReading>):RecyclerV
                             .child("RequestList")
                             .child(user!!.displayName.toString()) //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                             .setValue("Checked")
-                        return@setOnCheckedChangeListener
-
                     }
-                    itemView.cardView_checkBox.isChecked = true
                 }
                 else {
                     if (data.storeName != null) { //임시 null허용 처리
@@ -65,8 +62,7 @@ class TimeCardAdapter(val timeListToSend:ArrayList<JobTimeForReading>):RecyclerV
                             .child("RequestList")
                             .child(user!!.displayName.toString()) //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                             .removeValue()
-                        itemView.cardView_checkBox
-                        return@setOnCheckedChangeListener
+
                     }
                 }
             }

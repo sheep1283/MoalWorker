@@ -62,7 +62,7 @@ class ThirdFragment : Fragment() {
                                         .child("RegisteredStore")
                                         .child(storename)
                                         .setValue("Join")
-
+                                    Toast.makeText(activity, "등록완료", Toast.LENGTH_SHORT).show()
                                 }
                             }
 

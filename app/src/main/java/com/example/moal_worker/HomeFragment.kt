@@ -1,9 +1,6 @@
 package com.example.moal_worker
 
 
-
-
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,11 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -45,13 +40,9 @@ class HomeFragment : Fragment()
         } //home fragment의 +버튼을 누르면 workingSchedualeActivity를 불러온다.
         return v
     }
-    //  val requestclicked  = 1
-    // var selectedstore = ""
-    // var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    // val dirFire: DatabaseReference = rootRef
+
     val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
     var storeList = arrayListOf<JobInfoForReading>()
-    // var data =  arrayListOf<JobInfoForReading>()
     var timeList = arrayListOf<JobTimeForReading>()
     val user = FirebaseAuth.getInstance().currentUser
 
@@ -67,7 +58,7 @@ class HomeFragment : Fragment()
         colors.add(Color.rgb(248, 237, 170))//c2
         colors.add(Color.rgb(162, 194, 106))//c3
         colors.add(Color.rgb(166, 235, 142))//c4
-        colors.add(Color.rgb(125, 211, 240))//하늜색
+        colors.add(Color.rgb(125, 211, 240))//하늘색
         colors.add(Color.rgb(173, 211, 255))//c5
         colors.add(Color.rgb(106, 196, 185))//c9
         colors.add(Color.rgb(215, 190, 252))//c7
@@ -82,7 +73,7 @@ class HomeFragment : Fragment()
         val dirFire: DatabaseReference = rootRef
         val user = FirebaseAuth.getInstance().currentUser
 
-        initView(v)  //빈 calendar xml
+        initView(v)  //빈 calendar xml 틀
         val name = ""
         val postListener = object : ValueEventListener {
 
@@ -94,6 +85,7 @@ class HomeFragment : Fragment()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+                var i: Int = 0
                 timeList.clear()
                 for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children) { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                     for (snapShotDays: DataSnapshot in p0.child("stores").child(snapShotStores.key.toString()).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -121,13 +113,14 @@ class HomeFragment : Fragment()
 
                                     )
                                     timeList.add(jobTimeForReading)
+
                                 }
                             }
                         }
                     }
                 }
 
-                var i: Int = 0
+
                 //이미 request된 스케줄 읽어오기
                 for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children){ //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                     for (snapShotDays: DataSnapshot in p0.child("stores").child("노랑통닭 홍대점").child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -168,10 +161,12 @@ class HomeFragment : Fragment()
 
 
                                         }
-                                        day_sche_calendar.apply {
+                                        day_sche_calendar.adapter = dayListAdapter
+                                        dayListAdapter.setDayList(listOfDay)
+                                        /*day_sche_calendar.apply {
                                             day_sche_calendar.adapter = dayListAdapter
                                             dayListAdapter.setDayList(listOfDay)
-                                        }
+                                        }*/
                                     }
                                 }
                             }
@@ -186,16 +181,16 @@ class HomeFragment : Fragment()
 
 
     private fun initView(v: View) { //fragment에서 onViewCreated 밖에 함수를 선언할때
-        // view를 사용할 일이 있을때 인자로 넘겨줘야한다.
+        // view를 사용할 일이 있어서 인자로 넘겨줘야한다.
 
         //time RecyclerView
         time_sche_calendar.layoutManager = GridLayoutManager(activity, 1)
         //RecyclerView가 고정된 사이즈로 1개 항목을 한 줄에 나타나게 한다.
-        time_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))
+
         //day RecyclerView
         day_sche_calendar.layoutManager = GridLayoutManager(activity, 7)
         //RecyclerView가 고정된 사이즈로 7개 항목을 한 줄에 나타나게 한다.
-        day_sche_calendar.addItemDecoration(GridItemDecoration(0, 2))//여백 0,
+
 
 
         val timeListAdapter = TimeIntervalAdapter()
@@ -208,7 +203,7 @@ class HomeFragment : Fragment()
         //내용물 없는 빈 칸 xml 띄우기
 
         // 2개의 RecyclerView의 Scroll을 통일하는 코드
-        val daycal: RecyclerView = v.findViewById(R.id.day_sche_calendar)
+        val daycal: RecyclerView = v.findViewById(R.id.day_sche_calendar) //v(view)인자 사용부분
         val timecal: RecyclerView = v.findViewById(R.id.time_sche_calendar)
         val scrollListener1: RecyclerView.OnScrollListener
         lateinit var scrollListener2: RecyclerView.OnScrollListener

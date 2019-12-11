@@ -3,7 +3,7 @@ package com.example.moal_worker
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-
+//recycler view에 여백을 주고싶을때 사용하는 class. 사용이력 없음
 class GridItemDecoration(gridSpacingPx: Int, gridSize: Int) : RecyclerView.ItemDecoration() {
     private var mSizeGridSpacingPx: Int = gridSpacingPx
     private var mGridSize: Int = gridSize
