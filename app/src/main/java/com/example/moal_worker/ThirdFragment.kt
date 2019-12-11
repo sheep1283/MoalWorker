@@ -45,7 +45,7 @@ class ThirdFragment : Fragment() {
                         if (snapShottedName == null) { //DB에 등록된 가게가 아예 없을 경우. 유저 사용시 이런 경우는 없을 것.
                             Toast.makeText(activity, "아직 가게 정보가 없어요!", Toast.LENGTH_SHORT).show()
                         } else {
-                            if (snapShottedName == registerStore) { //DB에 해당 가게가 없을 경우
+                            if (snapShottedName == registerStore) {
                                 storename = registerStore
                                 database.child("stores") //해당 가게에 요청 보내기
                                     .child(storename)
@@ -61,7 +61,7 @@ class ThirdFragment : Fragment() {
                                     .child(storename)
                                     .setValue("Join")
                                 Toast.makeText(activity, "등록완료", Toast.LENGTH_SHORT).show()
-                            } else {
+                            } else {//DB에 해당 가게가 없을 경우
                                 Toast.makeText(activity, "그런 가게 없어요!", Toast.LENGTH_SHORT).show()
                             }
                         }

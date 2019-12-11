@@ -75,6 +75,7 @@ class HomeFragment : Fragment()
 
         initView(v)  //빈 calendar xml 틀
         val name = ""
+        var selectedstore = ""
         val postListener = object : ValueEventListener {
 
             val dayListAdapter = DayListAdapter()
@@ -122,8 +123,9 @@ class HomeFragment : Fragment()
 
 
                 //이미 request된 스케줄 읽어오기
-                for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children){ //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
-                    for (snapShotDays: DataSnapshot in snapShotStores.child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
+                for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user.uid).child("RegisteredStore").children){
+                    selectedstore = snapShotStores.key.toString()
+                    for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                         for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                             for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
                                 if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Request") { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
@@ -161,12 +163,15 @@ class HomeFragment : Fragment()
 
 
                                         }
-                                        day_sche_calendar.adapter = dayListAdapter
-                                        dayListAdapter.setDayList(listOfDay)
-                                        /*day_sche_calendar.apply {
+
                                             day_sche_calendar.adapter = dayListAdapter
                                             dayListAdapter.setDayList(listOfDay)
-                                        }*/
+                                            /*day_sche_calendar.apply {
+                                                day_sche_calendar.adapter = dayListAdapter
+                                                dayListAdapter.setDayList(listOfDay)
+                                            }*/
+
+
                                     }
                                 }
                             }
