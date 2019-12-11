@@ -48,26 +48,26 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailIs, passwordIs)
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailIs, passwordIs) //아뒤 비번 형식 맞으면 생성해주는 함수. auth 제공함수
                 .addOnCompleteListener {
                     if (!it.isSuccessful) return@addOnCompleteListener
                     else {
-                        val uid = FirebaseAuth.getInstance().uid ?: ""
+                        val uid = FirebaseAuth.getInstance().uid ?: "" //null처리 근데 널 될일 읎다 구글이 잘못되지않는이상 위에서 이미 auth에 문제 없는거 확인(.addOnCompleteListener)
                         val ref = FirebaseDatabase.getInstance().reference.child("users")
                             .child("/workers/$uid")
                         val profileUpdate = UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
-                            .build()
-                        val userupdate = FirebaseAuth.getInstance().currentUser
+                            .build() //displayname은 auth에서 제공하여 기본 호출 가능. 이걸 name으로 변경해주겟슴
+                        val userupdate = FirebaseAuth.getInstance().currentUser //생성했으니 현재 유저정보로 넘어올 수 있음
                         val user = UserRegister(uid, name)
 
-                        ref.setValue(user)
-                        userupdate?.updateProfile(profileUpdate)
+                        ref.setValue(user) //uid와 name을 auth뿐만아니라 realtimeDB에도 저장. 해당 uid밑에 uid, name생성
+                        userupdate?.updateProfile(profileUpdate) //displayname 변경한거 적용
 
-                        finish()
+                        finish() //이제 로그인으로 넘어감
                     }
                 }
-                .addOnFailureListener {
+                .addOnFailureListener { //비번6자리 이하, 이메일 형식 틀림 등등의 이유로 등록 실패시
                     Toast.makeText(this, "외않돼지?.", Toast.LENGTH_SHORT).show()
 
                 }

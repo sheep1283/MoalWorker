@@ -1,6 +1,6 @@
 package com.example.moal_worker
 
-class JobTimeInfo {
+class JobTimeInfo { //jobtimeforreading과 함께 스케줄정보 읽어오는 형식(어댑터로 전달용)
     var partName = ""
     var storeName = ""
     var startHour = 0

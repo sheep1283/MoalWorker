@@ -38,11 +38,11 @@ class StoreCardAdapter(val storeList:ArrayList<JobInfoForReading>): RecyclerView
 
         fun bind(data: JobInfoForReading) {
 
-            itemView.cardview_storename.text = data.storeName
+            itemView.cardview_storename.text = data.storeName //액티비티에서 받아온거 하나씩 뷰로 띄워줌
 
-            itemView.StoreLayout.setOnClickListener {
+            itemView.StoreLayout.setOnClickListener { //해당 가게 클릭되면
                 val intent : Intent = Intent(itemView.context, WorkingScheduleActivity::class.java)
-                intent.putExtra("clickedstore", itemView.cardview_storename.text.toString())
+                intent.putExtra("clickedstore", itemView.cardview_storename.text.toString()) //clickedstore를 통해 클릭한 가게 이름 전달
                 (itemView.context as WorkingScheduleActivity).finish()
                 itemView.context.startActivity(intent)
             }

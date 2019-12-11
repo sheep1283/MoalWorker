@@ -20,10 +20,10 @@ class CalenderActivity : AppCompatActivity(){
 
         val bottomnavigation : BottomNavigationView = btm_nav
         val user = FirebaseAuth.getInstance().currentUser
-        Toast.makeText(this, user!!.displayName.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, user!!.displayName.toString(), Toast.LENGTH_LONG).show() //로그인된거 확인용
 
 
-        homeFragment = HomeFragment()
+        homeFragment = HomeFragment() //시작화면 홈프래그먼트로 해주게
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout,homeFragment)

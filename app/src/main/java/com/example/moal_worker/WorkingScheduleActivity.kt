@@ -2,6 +2,7 @@ package com.example.moal_worker
 
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -43,9 +44,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
 
         initView()//빈 calendar xml
         val listOfDay = ArrayList<DayScheduleModel>(generateDummyData())
-        var timeList = arrayListOf<JobTimeForReading>()
+        var timeList = arrayListOf<JobTimeForReading>() // 이미 request된 것도 읽음. 캘린더에 띄우기
         var storeList = arrayListOf<JobInfoForReading>() //DB에서 가게 목록 읽어서 StoreCardView로 보냄
-        var timeListToSend = arrayListOf<JobTimeForReading>()
+        var timeListToSend = arrayListOf<JobTimeForReading>() //이미 request된건 빼고 카드뷰에 전달할 리스트
 
         val postListener = object : ValueEventListener {
 
@@ -104,8 +105,6 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                             } else {
                                                 i++
                                             }
-
-
                                         }
                                     }
                                 }
@@ -120,7 +119,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                     .child(user!!.uid).child("RegisteredStore").children) { //user개인정보에 다른 프래그먼트에서 이미 등록한 RegisteredStore
                     val storename = snapShotStore.key
                     if (storename == null) {
-
+                        Toast.makeText(this@WorkingScheduleActivity, "아직 가게 등록이 안됐어요", Toast.LENGTH_SHORT).show() //null이면 걍 아무것도 안뜸
                     } else {
                         val jobInfoForReading = JobInfoForReading(storename)
                         storeList.add(jobInfoForReading)
@@ -135,7 +134,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                 timeList.clear()
                 timeListToSend.clear()//직전 실행 값이 남아있을 수 있으므로 초기화
 
-                val name = selectedstore
+                val name = selectedstore //jobtimeinfo에 저장될 가게 이름
                 for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                     for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                         for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) { //오미마
@@ -145,7 +144,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                             val jobTimeInfo: JobTimeInfo? =
                                 snapShotTime.getValue(JobTimeInfo::class.java)
 
-                            if (jobTimeInfo == null || day == null || position == null || part == null) {
+                            if (jobTimeInfo == null || day == null || position == null || part == null) { //점주 앱에서 네개의 값이 null이 되면 받지 않게 처리됨
 
                             } else {
                                 val jobTimeForReading = JobTimeForReading(
@@ -160,7 +159,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                     day
 
                                 )
-                                timeList.add(jobTimeForReading)
+                                timeList.add(jobTimeForReading) //일단 전체 스케줄을 읽어옴. 일단 읽고 나중에 이미 리퀘스트 된건 거를꺼임
                             }
                             if(snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() != "Request"){
                                 val day = snapShotDays.key
@@ -184,20 +183,20 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         day
 
                                     )
-                                    timeListToSend.add(jobTimeForReading)
+                                    timeListToSend.add(jobTimeForReading) //리퀘스트 된거 걸러서 다른 리스트에 저장(어댑터로 보낼 용도)
                                 }
                             }
                         }
                     }
                 }
-                writeDatabase()//이미 request된 스케줄 읽어오기. 일단 노랑통닭 홍대점만 읽지만, 등록된 스토어 전부 읽어야 함
+                writeDatabase()//이미 request된 스케줄 읽어와서 캘린더에 띄우기
 
 
-                request_button.setOnClickListener {
+                request_button.setOnClickListener { // 등록하기 버튼 누르면
                     for (snapShotDays: DataSnapshot in p0.child("stores").child(selectedstore).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
                         for (snapShotWorkingParts: DataSnapshot in snapShotDays.children) { //서빙
                             for (snapShotTime: DataSnapshot in snapShotWorkingParts.children) {
-                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Checked") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
+                                if (snapShotTime.child("RequestList").child(user!!.displayName.toString()).getValue() == "Checked") {//로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님. 어댑터에서 체크한거
                                     database //체크된 스케줄 버튼 클릭시 request
                                         .child("stores")
                                         .child(selectedstore)
@@ -207,7 +206,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         .child(snapShotTime.key.toString())
                                         .child("RequestList")
                                         .child(user!!.displayName.toString())
-                                        .setValue("Request")
+                                        .setValue("Request") //리퀘스트로 상태 바꿔줌
 
 
                                 }
@@ -215,28 +214,23 @@ class WorkingScheduleActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    writeDatabase()
+                    writeDatabase() //리퀘스트 목록이 바뀌었으니까 캘린더 다시 띄움
                 }
 
 
                 day_sche_calendar.apply {
-
                     day_sche_calendar.adapter = dayListAdapter
                     dayListAdapter.setDayList(listOfDay)
                 }
                 time_list.apply {
                     layoutManager = LinearLayoutManager(context) //cardView로 띄워지게 해당 adapter에 읽은 값 전달
-                    adapter = TimeCardAdapter(timeListToSend)
+                    adapter = TimeCardAdapter(timeListToSend) //null이면 안뜸
                     // jobTimes =timecardAdapter.copy()
 
                 }
-
-
             }
         }
         dirFire.addValueEventListener(postListener)
-
-
     }
 
 

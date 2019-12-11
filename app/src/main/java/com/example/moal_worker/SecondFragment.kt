@@ -20,9 +20,6 @@ import kotlinx.android.synthetic.main.fragment_second.*
  */
 class SecondFragment : Fragment() {
 
-    val database = FirebaseDatabase.getInstance().reference
-    var myRef : DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    val dirFire : DatabaseReference = myRef
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
