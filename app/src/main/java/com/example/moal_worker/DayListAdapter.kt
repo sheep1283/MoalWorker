@@ -1,5 +1,6 @@
 package com.example.moal_worker
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,8 +30,22 @@ class DayListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         //인자로 들어온 array를 adapter에 새롭게 갱신
     }
 
+
     fun showInCalendar(listOfDay:ArrayList<DayScheduleModel>,
-    jobTimeForReading : JobTimeForReading,day :String, colors: ArrayList<Int>, i: Int){
+    jobTimeForReading : JobTimeForReading,day :String, i: Int){
+
+        val colors = ArrayList<Int>() //일정마다 사용할 color들을 담는 colors배열
+        colors.add(Color.rgb(250, 190, 190))//c1
+        colors.add(Color.rgb(248, 237, 170))//c2
+        colors.add(Color.rgb(162, 194, 106))//c3
+        colors.add(Color.rgb(166, 235, 142))//c4
+        colors.add(Color.rgb(125, 211, 240))//하늘색
+        colors.add(Color.rgb(173, 211, 255))//c5
+        colors.add(Color.rgb(106, 196, 185))//c9
+        colors.add(Color.rgb(215, 190, 252))//c7
+        colors.add(Color.rgb(211, 181, 228))//c8
+        colors.add(Color.rgb(172, 165, 165))//c9
+
 
         var dayInt = 0
         when (day) {
@@ -68,7 +83,7 @@ class DayListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val se = st + end
             val ts = start * 2
             if (startMin != endMin) {
-                //시작 /끝 분->30분/ 0분 = 홀수개의 칸5r4
+                //시작 /끝 분->30분/ 0분 = 홀수개의 칸
                 if (ts == (se - 1.5F)) {
                     listOfDay[t] = DayScheduleModel(
                         positionName,

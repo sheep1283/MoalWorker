@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_register.*
 import java.util.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
-    private var callback: SessionCallback = SessionCallback()
+    private var callback: SessionCallback = SessionCallback(context = this) //intent를 위해 context 인자로 넘겨줌
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,14 +94,17 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private class SessionCallback : ISessionCallback { //private
+    private class SessionCallback(context: Context) : ISessionCallback { //intent위해 context 인자로 받음
+        // 로그인에 실패한 상태
+        var context= context
         override fun onSessionOpenFailed(exception: KakaoException?) {
             Log.e("TAG", "Session Call back :: onSessionOpenFailed: ${exception?.message}")
         }
-
+        // 로그인에 성공한 상태
         override fun onSessionOpened() {
             UserManagement.getInstance().me(object : MeV2ResponseCallback() {
                 override fun onFailure(errorResult: ErrorResult?) {
+                    // 사용자 정보 요청 실패
                     Log.d("TAG", "Session Call back :: on failed ${errorResult?.errorMessage}")
                 }
 
@@ -146,7 +149,9 @@ class RegisterActivity : AppCompatActivity() {
                         }
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(emailIs,passwordIs).addOnCompleteListener {
                         if (it.isSuccessful){
-                            val intent = Intent(RegisterActivity(), CalenderActivity::class.java)
+                            val intent = Intent(context, CalenderActivity::class.java)
+                            context.startActivity(intent)
+                            //카카오 로그인 성공 후 db등록 완료되면, homefragment로 진입. 시간 좀 소요됨
 
                         }
                     }
@@ -159,6 +164,7 @@ class RegisterActivity : AppCompatActivity() {
                     keys.add("kakao_account.email")
                     UserManagement.getInstance().me(keys, object : MeV2ResponseCallback() {
                         override fun onFailure(errorResult: ErrorResult) {
+                            // 사용자 정보 요청 실패
                             val message = "failed to get user info. msg=$errorResult"
                             Logger.d(message)
                         }

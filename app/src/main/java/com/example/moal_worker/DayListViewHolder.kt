@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.part_time_cardview.view.*
 class DayListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bindView(dayModel : DayScheduleModel) {
         //if(dayModel.Name != null && dayModel.fill ==null) {
-
         // }
 
         if (dayModel.fill != null ) {//내용(part이름, 오픈 미들 마감)이 들어올때

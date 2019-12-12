@@ -23,9 +23,6 @@ import kotlinx.android.synthetic.main.day_calendar.*
 
 class HomeFragment : Fragment()
 {
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,19 +50,6 @@ class HomeFragment : Fragment()
         val dayListAdapter = DayListAdapter()
         day_sche_calendar.adapter = dayListAdapter
 
-        val colors = ArrayList<Int>() //일정마다 사용할 color들을 담는 colors배열
-        colors.add(Color.rgb(250, 190, 190))//c1
-        colors.add(Color.rgb(248, 237, 170))//c2
-        colors.add(Color.rgb(162, 194, 106))//c3
-        colors.add(Color.rgb(166, 235, 142))//c4
-        colors.add(Color.rgb(125, 211, 240))//하늘색
-        colors.add(Color.rgb(173, 211, 255))//c5
-        colors.add(Color.rgb(106, 196, 185))//c9
-        colors.add(Color.rgb(215, 190, 252))//c7
-        colors.add(Color.rgb(211, 181, 228))//c8
-        colors.add(Color.rgb(172, 165, 165))//c9
-
-
 //        var rootRef: DatabaseReference = FirebaseDatabase.getInstance().getReference()
 //        val dirFire: DatabaseReference = rootRef.child("stores").child("노랑통닭 홍대점")
 
@@ -74,19 +58,16 @@ class HomeFragment : Fragment()
         val user = FirebaseAuth.getInstance().currentUser
 
         initView(v)  //빈 calendar xml 틀
+
         val name = ""
         var selectedstore = ""
+
         val postListener = object : ValueEventListener {
-
-            val dayListAdapter = DayListAdapter()
-
-
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-
                 timeList.clear()
                 for(snapShotStores : DataSnapshot in p0.child("users").child("workers").child(user!!.uid).child("RegisteredStore").children) { //로그인을 해야 이 액티비티로 이동이 가능하므로 user는 null아님
                     for (snapShotDays: DataSnapshot in p0.child("stores").child(snapShotStores.key.toString()).child("WorkingPart").children) { //요일 // 위의 intent에서  null처리 했기때문에 selectedstore는 non-null
@@ -114,7 +95,6 @@ class HomeFragment : Fragment()
 
                                     )
                                     timeList.add(jobTimeForReading)
-
                                 }
                             }
                         }
@@ -150,14 +130,8 @@ class HomeFragment : Fragment()
                                                 part,
                                                 day
                                             )
-                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
+                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day, i)
                                             //jodTimeForReading의 내용들을 calendar에 나타내게 하는 코드
-
-
-                                         //한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
-                                            //0번째 인덱스로 다시 복귀
-
-
                                         }
                                         if(day_sche_calendar != null){ //세번째 fragment에서 등록 후 이부분 널처리 요함
                                             day_sche_calendar.adapter = dayListAdapter
@@ -166,13 +140,13 @@ class HomeFragment : Fragment()
                                                 day_sche_calendar.adapter = dayListAdapter
                                                 dayListAdapter.setDayList(listOfDay)
                                             }*/
-
                                     }
                                     if (i == 9) {
                                         i = 0
                                     } else {
                                         i++
-                                    }
+                                    }    //한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
+                                    //0번째 인덱스로 다시 복귀
                                 }
                             }
                         }

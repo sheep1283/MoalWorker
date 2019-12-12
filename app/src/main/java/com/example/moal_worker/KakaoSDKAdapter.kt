@@ -17,7 +17,7 @@ class KakaoSDKAdapter: KakaoAdapter() {
 
             override fun isUsingWebviewTimer(): Boolean {
                 return false
-            }//로그인 웹부 에서 타이머 설정 여부
+            }//로그인 웹뷰에서 타이머 설정 여부
 
             override fun getApprovalType(): ApprovalType? {
                 return ApprovalType.INDIVIDUAL
