@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_register.*
 import java.util.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
-    private var callback: SessionCallback = SessionCallback()
+    private var callback: SessionCallback = SessionCallback(context = this) //intent를 위해 context 인자로 넘겨줌
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,8 +94,9 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private class SessionCallback : ISessionCallback { //private
+    private class SessionCallback(context: Context) : ISessionCallback { //intent위해 context 인자로 받음
         // 로그인에 실패한 상태
+        var context= context
         override fun onSessionOpenFailed(exception: KakaoException?) {
             Log.e("TAG", "Session Call back :: onSessionOpenFailed: ${exception?.message}")
         }
@@ -148,7 +149,9 @@ class RegisterActivity : AppCompatActivity() {
                         }
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(emailIs,passwordIs).addOnCompleteListener {
                         if (it.isSuccessful){
-                            val intent = Intent(RegisterActivity(), CalenderActivity::class.java)
+                            val intent = Intent(context, CalenderActivity::class.java)
+                            context.startActivity(intent)
+                            //카카오 로그인 성공 후 db등록 완료되면, homefragment로 진입. 시간 좀 소요됨
 
                         }
                     }
