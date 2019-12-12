@@ -37,10 +37,10 @@ class CalenderActivity : AppCompatActivity(){
 
                     homeFragment = HomeFragment()
                     supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.frame_layout,homeFragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+                        .beginTransaction() //전환 시작
+                        .replace(R.id.frame_layout,homeFragment)//해당 fragment로 전환
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN) //전환 애니메이션 선택
+                        .commit() //커밋
 
 
                 }

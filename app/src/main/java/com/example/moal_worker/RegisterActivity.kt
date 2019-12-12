@@ -95,13 +95,15 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private class SessionCallback : ISessionCallback { //private
+        // 로그인에 실패한 상태
         override fun onSessionOpenFailed(exception: KakaoException?) {
             Log.e("TAG", "Session Call back :: onSessionOpenFailed: ${exception?.message}")
         }
-
+        // 로그인에 성공한 상태
         override fun onSessionOpened() {
             UserManagement.getInstance().me(object : MeV2ResponseCallback() {
                 override fun onFailure(errorResult: ErrorResult?) {
+                    // 사용자 정보 요청 실패
                     Log.d("TAG", "Session Call back :: on failed ${errorResult?.errorMessage}")
                 }
 
@@ -159,6 +161,7 @@ class RegisterActivity : AppCompatActivity() {
                     keys.add("kakao_account.email")
                     UserManagement.getInstance().me(keys, object : MeV2ResponseCallback() {
                         override fun onFailure(errorResult: ErrorResult) {
+                            // 사용자 정보 요청 실패
                             val message = "failed to get user info. msg=$errorResult"
                             Logger.d(message)
                         }

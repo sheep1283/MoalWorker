@@ -26,20 +26,9 @@ class WorkingScheduleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_working_schedule)
-        val colors = ArrayList<Int>()
+
         val dayListAdapter = DayListAdapter()
         day_sche_calendar.adapter = dayListAdapter
-
-        colors.add(Color.rgb(250, 190, 190))//c1
-        colors.add(Color.rgb(248, 237, 170))//c2
-        colors.add(Color.rgb(162, 194, 106))//c3
-        colors.add(Color.rgb(166, 235, 142))//c4
-        colors.add(Color.rgb(125, 211, 240))//하늜색
-        colors.add(Color.rgb(173, 211, 255))//c5
-        colors.add(Color.rgb(106, 196, 185))//c9
-        colors.add(Color.rgb(215, 190, 252))//c7
-        colors.add(Color.rgb(211, 181, 228))//c8
-        colors.add(Color.rgb(172, 165, 165))//c9
 
 
         initView()//빈 calendar xml
@@ -98,7 +87,7 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                                 part,
                                                 day
                                             )
-                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , colors, i)
+                                            dayListAdapter.showInCalendar(listOfDay, jobTimeForReading ,day , i)
 
 
                                         }
@@ -107,7 +96,8 @@ class WorkingScheduleActivity : AppCompatActivity() {
                                         i = 0
                                     } else {
                                         i++
-                                    }
+                                    }//한 스케줄 적용이 끝나면 color 체인지, color배열 9개 색 다 쓰면
+                                    //0번째 인덱스로 다시 복귀
                                 }
                             }
                         }
