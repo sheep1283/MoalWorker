@@ -1,12 +1,16 @@
 package com.example.moal_worker
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentResult
 import kotlinx.android.synthetic.main.calender_activity.*
+import kotlinx.android.synthetic.main.fragment_second.*
 
 class CalenderActivity : AppCompatActivity(){
     lateinit var homeFragment: HomeFragment
@@ -68,10 +72,21 @@ class CalenderActivity : AppCompatActivity(){
             true
         }
 
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
+        var result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
+        if(result != null){
 
-
+            if(result.contents != null){
+                txtValue.text = result.contents
+            } else {
+                txtValue.text = "scan failed"
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
