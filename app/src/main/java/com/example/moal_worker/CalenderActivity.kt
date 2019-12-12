@@ -81,7 +81,7 @@ class CalenderActivity : AppCompatActivity(){
         if(result != null){
 
             if(result.contents != null){
-                txtValue.text = result.contents
+                Toast.makeText(this,result.contents+ "가게에 출석했습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 txtValue.text = "scan failed"
             }

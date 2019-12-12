@@ -64,8 +64,7 @@ class ThirdFragment : Fragment() {
                                         .setValue("Join")
                                     Toast.makeText(activity, "등록완료", Toast.LENGTH_SHORT).show()
                                 } else {//DB에 해당 가게가 없을 경우
-                                    Toast.makeText(activity, "그런 가게 없어요!", Toast.LENGTH_SHORT)
-                                        .show()
+
                                 }
                             }
                         }
